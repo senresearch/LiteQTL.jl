@@ -13,5 +13,5 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/chelseatrotter/LMGPU.jl",
+    repo="github.com/chelseatrotter/LMGPU.jl.git",
 )
