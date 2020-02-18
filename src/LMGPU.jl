@@ -3,16 +3,7 @@ module LMGPU
 "Initial Documentation"
 greet() = print("Hello World!")
 
-"""
-Does addition
-
-### Returns
-* Integer
-
-
-"""
-function myAdd(x, y)
-    return x+y
-end
+include("read_data.jl")
+export get_geno_data
 
 end # module

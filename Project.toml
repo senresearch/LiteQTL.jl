@@ -4,15 +4,16 @@ authors = ["Chelsea Trotter", "Sen Research"]
 version = "0.1.0"
 
 [deps]
+DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+SafeTestsets = "1bc83da4-3b8d-516f-aca4-4fe02f6d838f"
 
 [compat]
-julia = "1.3"
 Documenter = "0.24"
+julia = "1.3"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
-
 
 [targets]
 test = ["Test"]
