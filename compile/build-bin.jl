@@ -4,5 +4,5 @@ function build_bin(file)
     build_executable(file, builddir = bin_path)
 end
 
-file = joinpath(@__DIR__, "test.jl")
+file = joinpath(@__DIR__, "main.jl")
 build_bin(file)
