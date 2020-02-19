@@ -23,8 +23,8 @@ function main(args)
 
     set_blas_threads(16);
     # Read in data.
-    G = get_geno_data(geno_file)
-    Y = get_pheno_data(pheno_file)
+    G = LMGPU.get_geno_data(geno_file)
+    Y = LMGPU.get_pheno_data(pheno_file)
     # getting geno and pheno file size.
     n = size(Y,1)
     m = size(Y,2)

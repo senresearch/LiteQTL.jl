@@ -14,7 +14,7 @@ include("data_io.jl")
 include("util.jl")
 include("cpu.jl")
 include("gpu.jl")
-include("cli.jl")
+# include("cli.jl")
 
 #put all your public functions (functions that you want user to use) here.
 export get_geno_data, get_pheno_data, cpurun, gpurun
