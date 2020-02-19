@@ -7,4 +7,4 @@ using SafeTestsets
 #
 # end
 
-@safetestset "testing reading data" begin include("read_data_test.jl") end
+@safetestset "testing data io" begin include("data_io_test.jl") end
