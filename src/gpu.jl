@@ -2,6 +2,7 @@
 function get_pheno_block_size(n::Int, m::Int, p::Int)
     total_data_size = (n*m + n*p + m*p) * sizeof(Float32) # get the number of bytes in total
     # gpu_mem = get_gpu_mem_size()*0.9 # can not use all of gpu memory, need to leave some for intermediate result.
+    # CUDAdrv.available_memory()
     gpu_mem = 16914055168 * 0.9 # can not use all of gpu memory, need to leave some for intermediate result.
     #if m is too big for gpu memory, I need to seperate m into several blocks to process
     block_size = Int(ceil((gpu_mem - (n*p))/((n+p) * sizeof(Float32))))
