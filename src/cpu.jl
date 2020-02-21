@@ -1,4 +1,8 @@
 
+function calculate_r(a::Array,b::Array)
+    return LinearAlgebra.BLAS.gemm('T', 'N', a,b);
+end
+
 
 function lod_score_multithread(m,r::Array{Float64,2})
     n = convert(Float64,m)

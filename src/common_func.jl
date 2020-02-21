@@ -26,12 +26,3 @@ function calculate_px(x::Array{Float64,2})
     # display(result)
     return result
 end
-
-
-function calculate_r(a::Array,b::Array)
-    return LinearAlgebra.BLAS.gemm('T', 'N', a,b);
-end
-
-function calculate_r(a::CuArray,b::CuArray)
-    return CuArrays.CUBLAS.gemm('T', 'N', a,b);
-end
