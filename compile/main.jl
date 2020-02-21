@@ -8,13 +8,13 @@ function main(args)
     # geno_file = joinpath(@__DIR__, "..", "data", "cleandata", "geno_prob.csv")
     # pheno_file = joinpath(@__DIR__, "..", "data", "cleandata", "imputed_pheno.csv")
     # export_matrix = false
-    # output_file = "output.csv"
+    # output_file = joinpath(@__DIR__, "..", "data", "results", "output.csv")
 
     ## if need to be compiled.
     # push!(ARGS, joinpath(@__DIR__, "..", "data", "cleandata", "geno_prob.csv"))
     # push!(ARGS, joinpath(@__DIR__, "..", "data", "cleandata", "imputed_pheno.csv"))
     # push!(ARGS, "false" )
-    # push!(ARGS, "output.csv")
+    # push!(ARGS, joinpath(@__DIR__, "..", "data", "results", "output.csv"))
 
 
     geno_file = args[1]
@@ -37,16 +37,17 @@ function main(args)
     lod = LMGPU.cpurun(Y, G,n,export_matrix);
 
     # write output to file
-    writedlm(joinpath(Base.@__DIR__, "..", "data", "results", output_file), lod, ',')
+    writedlm(output_file, lod, ',')
+    println("Max lod exported to $output_file")
 
     # TODO: generate plot?
     return lod
 
 end
 
-Base.@ccallable function julia_main()::Cint
+Base.@ccallable function julia_main(ARGS)::Cint
     main(ARGS);
     return 0
 end
 
-# main()
+main(ARGS)
