@@ -9,18 +9,6 @@ function main()
     export_matrix = false
     output_file = "output.csv"
 
-    ## if need to be compiled.
-    # push!(ARGS, joinpath(@__DIR__, "..", "data", "cleandata", "geno_prob.csv"))
-    # push!(ARGS, joinpath(@__DIR__, "..", "data", "cleandata", "imputed_pheno.csv"))
-    # push!(ARGS, "false" )
-    # push!(ARGS, "output.csv")
-
-
-    # geno_file = args[1]
-    # pheno_file = args[2]
-    # export_matrix = args[3] == "true"
-    # output_file = args[4]
-
     LMGPU.set_blas_threads(16);
     # Read in data.
     G = LMGPU.get_geno_data(geno_file)
