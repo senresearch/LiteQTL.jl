@@ -1,7 +1,10 @@
 #!/bin/bash
 
+# Assuming you are in LMGPU directory
+
+
 geno_file="./data/cleandata/geno_prob.csv"
-pheno_file="./data/cleandata/imputed_pheno.csv"
+pheno_file="./data/cleandata/traits.csv"
 export_matrix="false"
 output_file="./data/results/output.csv"
 

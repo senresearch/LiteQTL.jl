@@ -14,10 +14,6 @@ display(rqtl_result_float[:,1])
 # julia_result_file = joinpath(@__DIR__, "..", "data", "results", "output.csv")
 # julia_result = readdlm(julia_result_file, ',')
 
-
-
-
-
 #
 # open("/tmp/delim_file.csv", "w") do io
 #     writedlm(io, fake_data)

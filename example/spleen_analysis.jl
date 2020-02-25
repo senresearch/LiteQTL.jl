@@ -5,7 +5,8 @@ using DelimitedFiles
 function main()
     # if no input args.
     geno_file = joinpath(@__DIR__, "..", "data", "cleandata", "geno_prob.csv")
-    pheno_file = joinpath(@__DIR__, "..", "data", "cleandata", "imputed_pheno.csv")
+    # geno_file = joinpath(@__DIR__, "..", "data", "geno_prob.csv")
+    pheno_file = joinpath(@__DIR__, "..", "data","cleandata", "traits.csv")
     export_matrix = false
     output_file = "output.csv"
 
