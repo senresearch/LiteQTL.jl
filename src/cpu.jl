@@ -26,7 +26,6 @@ function lod_score(n, r::Array{Float64,2})
     return r
 end
 
-
 function cpurun_with_covar(Y::Array{Float64,2}, G::Array{Float64,2}, X::Array{Float64,2}, n)
     px = calculate_px(X)
     # display(px)
