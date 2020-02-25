@@ -4,6 +4,7 @@ module LMGPU
 using DelimitedFiles
 using LinearAlgebra
 using Base.Threads
+using ZipFile
 # using CuArrays
 # using CUDAnative
 # using CUDAdrv
