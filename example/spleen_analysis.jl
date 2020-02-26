@@ -1,12 +1,11 @@
 using LMGPU
 using DelimitedFiles
 
-# function main(args)
 function main()
     # if no input args.
-    geno_file = joinpath(@__DIR__, "..", "data", "cleandata", "geno_prob.csv")
+    geno_file = joinpath(@__DIR__, "..", "data", "SPLEEN_CLEAN_DATA", "geno_prob.csv")
     # geno_file = joinpath(@__DIR__, "..", "data", "geno_prob.csv")
-    pheno_file = joinpath(@__DIR__, "..", "data","cleandata", "traits.csv")
+    pheno_file = joinpath(@__DIR__, "..", "data","SPLEEN_CLEAN_DATA", "pheno.csv")
     export_matrix = false
     output_file = "output.csv"
     rqtl_file = joinpath(@__DIR__, "..", "data", "UTHSC_SPL_RMA_1210.zip")
@@ -34,7 +33,6 @@ function main()
         lod = vcat(header, lod)
     end
 
-    # @show size(lod)
 
     # write output to file
     writedlm(joinpath(Base.@__DIR__, "..", "data", "results", output_file), lod, ',')
@@ -44,9 +42,5 @@ function main()
 
 end
 
-# Base.@ccallable function julia_main()::Cint
-#     main(ARGS);
-#     return 0
-# end
 
 lod = main()

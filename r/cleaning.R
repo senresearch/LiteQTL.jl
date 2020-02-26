@@ -1,17 +1,15 @@
 library(mice)
-# library(lattice)
 library(parallel)
 library(qtl2)
 library(tidyverse)
+library(tictoc)
 
 getdata<-function(url){
   return(read_cross2(url))
-  # print("hello")
 }
-#keepidx<-which(rowSums(is.na(bxd$pheno))<1000798)
 
 keep_row_idx<-function(pheno, droprate){
-  rs = rowSums(is.na(pheno)) 
+  rs = rowSums(is.na(pheno))
   keepidx <- which(rs/ncol(pheno) <= droprate)
   return(keepidx)
 }
@@ -31,15 +29,10 @@ calc_gprob_update_gmap<-function(gmap_file, cross, ncore=1, error_prob=0.002, st
     map <- insert_pseudomarkers(map, step=step)
     write.csv(map, file=gmap_file, row.names = FALSE)
   }
-  
+
   pr <- calc_genoprob(cross, map, error_prob=error_prob, cores=ncore)
   return(pr)
 }
-
-# intersect(phenotype, genotype, 
-            # selected_pheno = "ProbeSet", 
-            # selected_geno = one_of("Locus","Chr","cM","Mb"), 
-            # match_name="BXD")
 
 #get whole genotype prob file
 getGenopr<-function(x){
@@ -57,35 +50,33 @@ getGenopr<-function(x){
   return(temp)
 }
 
+clean_and_write<-function(url, geno_output_file="geno_prob.csv", pheno_output_file="pheno.csv", new_gmap_file="gmap.csv",
+                          result_file="rqtl_result.csv",
+                          indi_droprate=0.0, trait_droprate=0.0, nseed=100, ncores=1, error_prob=0.002, stepsize=0){
 
-# url : data url
-# indi_droprate: droprate in percentage, ie: 10 percent
-# trait_droprate : droprate in percentage, ie: 10 percent
-# ncores: default detectCores()
-clean_and_write<-function(url, geno_output_file="geno_prob.csv", pheno_output_file="pheno.csv", new_gmap_file="gmap.csv", 
-                          indi_droprate=0.0, trait_droprate=0.0, nseed=100, ncores=1, error_prob=0.002, stepsize=1){  
-  # url = "/Users/xiaoqihu/Documents/hg/genome-scan-data-cleaning/data/UTHSC_SPL_RMA_1210.zip"
-  # geno_output_file="geno_prob.csv"
-  # pheno_output_file="pheno.csv"
-  # indi_droprate = 0.0
-  # trait_droprate = 0.0
-  # trait_droprate=0.0
-  # nseed=100
-  # ncores=1
-  # error_prob=0.002
-  # stepsize=1
-  
+# url="../data/UTHSC_SPL_RMA_1210.zip"
+# geno_output_file="../data/SPLEEN_CLEAN_DATA/geno_prob.csv"
+# pheno_output_file="../data/SPLEEN_CLEAN_DATA/pheno.csv"
+# new_gmap_file="../data/SPLEEN_CLEAN_DATA/gmap.csv"
+# result_file="../data/results/rqtl2_lod_score.csv"
+# indi_droprate=0.0; trait_droprate=0.0; nseed=100; ncores=1; error_prob=0.002; stepsize=0;
+
   bxd = getdata(url)
   print("got data from url")
 
-  # intersect 
-  # pick out shared bxd ids in geno and pheno 
+
+  # innerjoin
+  # pick out shared bxd ids in geno and pheno
   bxd_ids <- ind_ids_gnp(bxd)
+  cat("dimention of bxd_ids:", dim(bxd_ids))
   joint_bxd <- subset(bxd, ind = bxd_ids)
+
+
   # pick out the ones with no missing data
   filled_ids <- ind_ids(joint_bxd)[complete.cases(joint_bxd$pheno)]
+  cat("dimention of filled_ids :", dim(filled_ids))
   filled_bxd = subset(joint_bxd, ind = filled_ids)
-  
+
   # process pheno
   # trait = bxd$pheno
   # row_idx = keep_row_idx(trait, indi_droprate)
@@ -93,25 +84,38 @@ clean_and_write<-function(url, geno_output_file="geno_prob.csv", pheno_output_fi
   # col_idx = keep_col_idx(trait, trait_droprate)
   # trait<-trait[,col_idx]
   # print("processing pheno done")
-  
+
   #imputation
   # temp_imp = mice(trait,m=1, method = "norm", seed = nseed)
   #col_idx = keep_col_idx(trait, trait_droprate)
   #pheno[,col_idx]print("mice done")
   #imp = complete(temp_imp)
   #print("complete imputation done")
-  
+
   # calculate genotype probablity
-  pr = calc_gprob_update_gmap(new_gmap_file, filled_bxd, ncores, error_prob, step)
+  pr = calc_gprob_update_gmap(new_gmap_file, filled_bxd, ncores, error_prob, stepsize, FALSE)
   prob1 = getGenopr(pr)
   print("calculating geno prob done")
-  
+  cat("dimention of geno :", dim(prob1))
+
   write.csv(filled_bxd$pheno, file = pheno_output_file)
   write.csv(prob1, file = geno_output_file)
   print("writing out pheno and geno done")
 
+  print("Doing genome scan")
+  tic()
+  out = scan1(pr, filled_bxd$pheno, cores=32)
+  toc()
+  print("writing out result file.")
+  write.csv(out,file=result_file)
+
 }
 
-args = commandArgs(trailingOnly=TRUE)
-clean_and_write(args[1])
+# args[1]="../data/UTHSC_SPL_RMA_1210.zip"
+# args[2]="../data/SPLEEN_CLEAN_DATA/geno_prob.csv"
+# args[3]="../data/SPLEEN_CLEAN_DATA/pheno.csv"
+# args[4]="../data/SPLEEN_CLEAN_DATA/gmap.csv"
+# args[5]="../data/results/rqtl2_lod_score.csv"
 
+args = commandArgs(trailingOnly=TRUE)
+clean_and_write(args[1], args[2], args[3], args[4], args[5])
