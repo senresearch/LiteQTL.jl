@@ -16,6 +16,7 @@ include("util.jl")
 include("cpu.jl")
 # include("gpu.jl")
 include("common_func.jl")
+include("match_gmap_info.jl")
 # include("cli.jl")
 
 #put all your public functions (functions that you want user to use) here.

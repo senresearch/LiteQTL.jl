@@ -35,6 +35,7 @@ function main()
     pheno_file = args[2]
     export_matrix = args[3] == "true"
     output_file = args[4]
+    rqtl_file = args[5]
 
     LMGPU.set_blas_threads(16);
     # Read in data.
@@ -49,13 +50,21 @@ function main()
 
     # running analysis.
     lod = LMGPU.cpurun(Y, G,n,export_matrix);
+    if !export_matrix
+        gmap = LMGPU.get_gmap_info(rqtl_file, "gmap.csv")
+        idx = trunc.(Int, lod[:,1])
+        gmap_info = LMGPU.match_gmap(idx, gmap)
+        lod = hcat(gmap_info, lod)
+        header = reshape(["marker", "chr", "pos", "idx", "lod"], 1,:)
+        lod = vcat(header, lod)
+    end
 
     # write output to file
     writedlm(output_file, lod, ',')
     println("Lod exported to $output_file")
 
     # TODO: generate plot?
-    return lod
+    # return lod
 
 end
 

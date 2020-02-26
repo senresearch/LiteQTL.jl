@@ -1,21 +1,36 @@
 
 function findfile(dir, name)
     for f in dir.files
-        if f.name == name
+        if occursin(name,f.name)
             return f
         end
     end
-    nothing
+    error("Can't find $name file")
 end
 
-
-function get_geno_data(file)
-    geno_data = readdlm(file, ',')
-    geno_prob = convert(Array{Float64,2},geno_data[2:end,2:end])
-    return geno_prob[:,1:2:end]
+function extension(url::String)
+    try
+        match(r"\.[A-Za-z0-9]+$", url).match
+    catch
+        ""
+    end
 end
 
-dir = ZipFile.Reader(joinpath(dirname(@__FILE__),"..", "data", "UTHSC_SPL_RMA_1210.zip"))
+function get_gmap_info(rqtl_file, gmap_file)
+    global f
+    if extension(rqtl_file) == ".zip"
+        dir = ZipFile.Reader(rqtl_file)
+        f = findfile(dir, gmap_file)
+    else
+        error("Rqtl file is not passed in as a zip, need to handle this.")
+    end
+    gmap = readdlm(f, ',')
+end
 
-f = findfile(dir, "BXD_gmap.csv")
-gmap = readdlm(f, ',')
+function match_gmap(idx::Array{Int64,1}, gmap)
+    tmp=Array{Any}(undef, size(idx)[1], size(gmap)[2])
+    for i in 1:size(idx)[1]
+        tmp[i,:] = gmap[idx[i],:]
+    end
+    return tmp
+end
