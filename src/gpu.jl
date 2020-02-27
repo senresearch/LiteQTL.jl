@@ -64,7 +64,7 @@ function lod_kernel(input, MAX,n)
     tid = (blockIdx().x-1) * blockDim().x + threadIdx().x
     if(tid < MAX+1)
         r_square = (input[tid]/n)^2
-        input[tid] = (-n/Float32(2.0)) * CUDAnative.log(Float32(1.0)-r_square)
+        input[tid] = (-n/Float32(2.0)) * CUDAnative.log10(Float32(1.0)-r_square)
     end
     return
 end

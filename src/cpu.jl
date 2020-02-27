@@ -10,7 +10,7 @@ function lod_score_multithread(m,r::Array{Float64,2})
     # for j in 1:size(r)[2]
         for i in 1:size(r)[1]
             r_square::Float64 = (r[i,j]/n)^2
-            r[i,j]= -n/Float64(2.0) * log(Float64(1.0)-r_square)
+            r[i,j]= -n/Float64(2.0) * log10(Float64(1.0)-r_square)
         end
     end
     return r
@@ -20,7 +20,7 @@ function lod_score(n, r::Array{Float64,2})
     for j in 1:size(r)[2]
         for i in 1:size(r)[1]
             r_square::Float64 = (r[i,j]/n)^2
-            r[i,j] = -n/Float64(2.0) * log(Float64(1.0)-r_square)
+            r[i,j] = -n/Float64(2.0) * log10(Float64(1.0)-r_square)
         end
     end
     return r
