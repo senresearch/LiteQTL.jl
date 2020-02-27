@@ -1,14 +1,14 @@
 using LMGPU
 using DelimitedFiles
 
-# function main(args)
 function main()
     # if no input args.
-    geno_file = joinpath(@__DIR__, "..", "data", "cleandata", "geno_prob.csv")
+    geno_file = joinpath(@__DIR__, "..", "data", "SPLEEN_CLEAN_DATA", "geno_prob.csv")
     # geno_file = joinpath(@__DIR__, "..", "data", "geno_prob.csv")
-    pheno_file = joinpath(@__DIR__, "..", "data","cleandata", "traits.csv")
+    pheno_file = joinpath(@__DIR__, "..", "data","SPLEEN_CLEAN_DATA", "pheno.csv")
     export_matrix = false
     output_file = "output.csv"
+    rqtl_file = joinpath(@__DIR__, "..", "data", "UTHSC_SPL_RMA_1210.zip")
 
     LMGPU.set_blas_threads(16);
     # Read in data.
@@ -24,6 +24,16 @@ function main()
     # running analysis.
     lod = LMGPU.cpurun(Y, G,n,export_matrix);
 
+    if !export_matrix
+        gmap = LMGPU.get_gmap_info(rqtl_file, "gmap.csv")
+        idx = trunc.(Int, lod[:,1])
+        gmap_info = LMGPU.match_gmap(idx, gmap)
+        lod = hcat(gmap_info, lod)
+        header = reshape(["marker", "chr", "pos", "idx", "lod"], 1,:)
+        lod = vcat(header, lod)
+    end
+
+
     # write output to file
     writedlm(joinpath(Base.@__DIR__, "..", "data", "results", output_file), lod, ',')
 
@@ -32,9 +42,4 @@ function main()
 
 end
 
-# Base.@ccallable function julia_main()::Cint
-#     main(ARGS);
-#     return 0
-# end
-
-main()
+lod = main()

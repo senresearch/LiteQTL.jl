@@ -75,6 +75,7 @@ function cpurun(a::Array, b::Array, n::Int, export_matrix::Bool)
         return lod
     end
     println("exporting max lod")
+
     return find_max_idx_value(lod)
 
 end
