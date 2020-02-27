@@ -16,19 +16,7 @@ end
 
 
 function main()
-# function main()
-    # if no input args.
-    # geno_file = joinpath(@__DIR__, "..", "data", "cleandata", "geno_prob.csv")
-    # pheno_file = joinpath(@__DIR__, "..", "data", "cleandata", "imputed_pheno.csv")
-    # export_matrix = false
-    # output_file = joinpath(@__DIR__, "..", "data", "results", "output.csv")
-
-    ## if need to be compiled.
-    # push!(ARGS, joinpath(@__DIR__, "..", "data", "cleandata", "geno_prob.csv"))
-    # push!(ARGS, joinpath(@__DIR__, "..", "data", "cleandata", "imputed_pheno.csv"))
-    # push!(ARGS, "false" )
-    # push!(ARGS, joinpath(@__DIR__, "..", "data", "results", "output.csv"))
-
+    
     args = ARGS
 
     geno_file = args[1]

@@ -54,13 +54,6 @@ clean_and_write<-function(url, geno_output_file="geno_prob.csv", pheno_output_fi
                           result_file="rqtl_result.csv",
                           indi_droprate=0.0, trait_droprate=0.0, nseed=100, ncores=1, error_prob=0.002, stepsize=0){
 
-# url="../data/UTHSC_SPL_RMA_1210.zip"
-# geno_output_file="../data/SPLEEN_CLEAN_DATA/geno_prob.csv"
-# pheno_output_file="../data/SPLEEN_CLEAN_DATA/pheno.csv"
-# new_gmap_file="../data/SPLEEN_CLEAN_DATA/gmap.csv"
-# result_file="../data/results/rqtl2_lod_score.csv"
-# indi_droprate=0.0; trait_droprate=0.0; nseed=100; ncores=1; error_prob=0.002; stepsize=0;
-
   bxd = getdata(url)
   print("got data from url")
 
@@ -76,21 +69,6 @@ clean_and_write<-function(url, geno_output_file="geno_prob.csv", pheno_output_fi
   filled_ids <- ind_ids(joint_bxd)[complete.cases(joint_bxd$pheno)]
   cat("dimention of filled_ids :", dim(filled_ids))
   filled_bxd = subset(joint_bxd, ind = filled_ids)
-
-  # process pheno
-  # trait = bxd$pheno
-  # row_idx = keep_row_idx(trait, indi_droprate)
-  # trait<-trait[row_idx,]
-  # col_idx = keep_col_idx(trait, trait_droprate)
-  # trait<-trait[,col_idx]
-  # print("processing pheno done")
-
-  #imputation
-  # temp_imp = mice(trait,m=1, method = "norm", seed = nseed)
-  #col_idx = keep_col_idx(trait, trait_droprate)
-  #pheno[,col_idx]print("mice done")
-  #imp = complete(temp_imp)
-  #print("complete imputation done")
 
   # calculate genotype probablity
   pr = calc_gprob_update_gmap(new_gmap_file, filled_bxd, ncores, error_prob, stepsize, FALSE)
@@ -110,12 +88,6 @@ clean_and_write<-function(url, geno_output_file="geno_prob.csv", pheno_output_fi
   write.csv(out,file=result_file)
 
 }
-
-# args[1]="../data/UTHSC_SPL_RMA_1210.zip"
-# args[2]="../data/SPLEEN_CLEAN_DATA/geno_prob.csv"
-# args[3]="../data/SPLEEN_CLEAN_DATA/pheno.csv"
-# args[4]="../data/SPLEEN_CLEAN_DATA/gmap.csv"
-# args[5]="../data/results/rqtl2_lod_score.csv"
 
 args = commandArgs(trailingOnly=TRUE)
 clean_and_write(args[1], args[2], args[3], args[4], args[5])
