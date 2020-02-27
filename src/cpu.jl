@@ -61,7 +61,6 @@ function find_max_idx_value(lod::Array{Float64,2})
 end
 
 
-
 ##################### Running CPU Function ###################
 function cpurun(a::Array, b::Array, n::Int, export_matrix::Bool)
     a_std = get_standardized_matrix(a);
@@ -76,6 +75,7 @@ function cpurun(a::Array, b::Array, n::Int, export_matrix::Bool)
         return lod
     end
     println("exporting max lod")
+
     return find_max_idx_value(lod)
 
 end
