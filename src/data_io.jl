@@ -7,7 +7,8 @@ end
 
 function get_pheno_data(file)
 
-    pheno = readdlm(file, ','; skipstart=1)[:,2:end-1]
+    #first column is individual ID such as : BXD1
+    pheno = readdlm(file, ','; skipstart=1)[:,2:end]
     return convert(Array{Float64,2}, pheno[:, 1:end])
 end
 

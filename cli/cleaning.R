@@ -80,6 +80,13 @@ clean_and_write<-function(url, geno_output_file="geno_prob.csv", pheno_output_fi
   write.csv(prob1, file = geno_output_file)
   print("writing out pheno and geno done")
 
+  # print("Doing genome scan")
+  # tic()
+  # out = scan1(pr, filled_bxd$pheno, cores=32)
+  # toc()
+  # print("writing out result file.")
+  # write.csv(out,file=result_file)
+
 }
 
 args = commandArgs(trailingOnly=TRUE)
