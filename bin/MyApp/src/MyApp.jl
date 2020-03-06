@@ -16,7 +16,7 @@ end
 
 
 function main()
-    
+
     args = ARGS
 
     geno_file = args[1]
@@ -57,7 +57,7 @@ function main()
 end
 
 if abspath(PROGRAM_FILE) == @__FILE__
-    real_main()
+    main()
 end
 
 end # module

@@ -38,7 +38,7 @@ function main()
     writedlm(joinpath(Base.@__DIR__, "..", "data", "results", output_file), lod, ',')
 
     # TODO: generate plot?
-    return lod
+    # return lod
 
 end
 

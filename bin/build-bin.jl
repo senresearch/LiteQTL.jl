@@ -1,3 +1,6 @@
 using PackageCompiler
 
-create_app("./MyApp", "./MyAppCompiled", force=true)
+app_dir = joinpath(@__DIR__, "MyApp")
+compile_dir = joinpath(@__DIR__, "MyAppCompiled")
+precompile_file = joinpath(app_dir,"precompile_app.jl")
+create_app(app_dir, compile_dir, force=true,incremental=true,precompile_execution_file=precompile_file)
