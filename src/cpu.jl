@@ -65,7 +65,6 @@ function find_max_idx_value(lod::Array{Float64,2}, signed=false)
         end
         max_array[i,1] = idx
         sign = (r_signbit && signed) ? -1 : 1
-        sign = 1
         max_array[i,2] = temp*sign
     end
     # println("CPU result size: $(size(max_array))")
