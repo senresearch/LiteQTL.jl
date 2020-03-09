@@ -39,7 +39,7 @@ function main()
     # running analysis.
     lod = LMGPU.cpurun(Y, G,n,export_matrix);
     if !export_matrix
-        gmap = LMGPU.get_gmap_info(rqtl_file, "gmap.csv")
+        gmap = LMGPU.get_gmap_info(rqtl_file)
         idx = trunc.(Int, lod[:,1])
         gmap_info = LMGPU.match_gmap(idx, gmap)
         lod = hcat(gmap_info, lod)
@@ -52,7 +52,7 @@ function main()
     println("Lod exported to $output_file")
 
     # TODO: generate plot?
-    # return lod
+    return lod
 
 end
 
