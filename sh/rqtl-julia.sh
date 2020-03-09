@@ -14,6 +14,6 @@ export_matrix="false"
 output_file="./data/results/hippo_output.csv"
 # rqtl_file is needed to find gmap.csv.
 rqtl_file="./data/HC_M2_0606_R.zip"
-
+r_sign=false
 # Test running time of binary built by PackageCompiler 1.0
-time JULIA_NUM_THREADS=16 ./bin/MyAppCompiled/bin/MyApp $geno_output_file $pheno_output_file $export_matrix $output_file $rqtl_file
+time JULIA_NUM_THREADS=16 ./bin/MyAppCompiled/bin/MyApp $geno_output_file $pheno_output_file $export_matrix $output_file $rqtl_file $r_sign

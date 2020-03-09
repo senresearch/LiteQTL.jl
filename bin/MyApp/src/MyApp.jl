@@ -24,6 +24,7 @@ function main()
     export_matrix = args[3] == "true"
     output_file = args[4]
     rqtl_file = args[5]
+    r_sign = args[6]
 
     LMGPU.set_blas_threads(16);
     # Read in data.
@@ -37,7 +38,7 @@ function main()
     # cpu_timing = benchmark(5, cpurun, Y, G,n,export_matrix);
 
     # running analysis.
-    lod = LMGPU.cpurun(Y, G,n,export_matrix);
+    lod = LMGPU.cpurun(Y, G,n,export_matrix, r_sign);
     if !export_matrix
         gmap = LMGPU.get_gmap_info(rqtl_file)
         idx = trunc.(Int, lod[:,1])
