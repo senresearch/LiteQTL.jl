@@ -3,13 +3,12 @@ using Test
 using DelimitedFiles
 using LinearAlgebra
 
-URL="../data/HC_M2_0606_R.zip"
-output_dir="../data/HIPPO_CLEAN_DATA/"
+URL=joinpath(@__DIR__, "..", "data", "HC_M2_0606_R.zip")
+output_dir=joinpath(@__DIR__, "..", "data","HIPPO_CLEAN_DATA")
 scan="FALSE"
 r_cleaning_script = joinpath(@__DIR__, "..", "r", "cleaning.R")
 
 @test isfile(URL)
-@test isdir(output_dir)
 @test isfile(r_cleaning_script)
 
 run(`Rscript --vanilla $r_cleaning_script $URL $output_dir $scan`)
