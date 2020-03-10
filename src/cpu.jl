@@ -20,10 +20,7 @@ function lod_score_multithread(m,r::Array{Float64,2}, signed=false)
     end
     return r
 end
-
-
-
-
+ 
 function cpurun_with_covar(Y::Array{Float64,2}, G::Array{Float64,2}, X::Array{Float64,2}, n)
     px = calculate_px(X)
     # display(px)

@@ -3,17 +3,15 @@
 # Assuming you are in LMGPU directory
 
 URL="./data/HC_M2_0606_R.zip"
-geno_output_file="./data/HIPPO_CLEAN_DATA/geno_prob.csv"
-pheno_output_file="./data/HIPPO_CLEAN_DATA/pheno.csv"
-new_gmap_file="./data/HIPPO_CLEAN_DATA/gmap.csv"
+output_dir="./data/HIPPO_CLEAN_DATA/"
 scan="FALSE"
 
-time Rscript --vanilla ./r/cleaning.R $URL $geno_output_file $pheno_output_file $new_gmap_file $scan
+time Rscript --vanilla ./r/cleaning.R $URL $output_dir $scan
 #
 export_matrix="false"
-output_file="./data/results/hippo_output.csv"
+output_file="julia_result.csv"
 # rqtl_file is needed to find gmap.csv.
-rqtl_file="./data/HC_M2_0606_R.zip"
+rqtl_file=$URL
 r_sign=false
 # Test running time of binary built by PackageCompiler 1.0
-time JULIA_NUM_THREADS=16 ./bin/MyAppCompiled/bin/MyApp $geno_output_file $pheno_output_file $export_matrix $output_file $rqtl_file $r_sign
+time JULIA_NUM_THREADS=16 julia ./bin/MyAppCompiled/bin/MyApp $output_dir $output_file $rqtl_file $export_matrix $r_sign

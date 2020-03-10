@@ -19,12 +19,15 @@ function main()
 
     args = ARGS
 
-    geno_file = args[1]
-    pheno_file = args[2]
-    export_matrix = args[3] == "true"
-    output_file = args[4]
-    rqtl_file = args[5]
-    r_sign = args[6]
+    output_dir = args[1]
+    output_file = args[2]
+    rqtl_file = args[3]
+    export_matrix = args[4] == "true"
+    r_sign = args[5] == "true"
+
+    geno_file = joinpath(output_dir,"geno_prob.csv")
+    pheno_file = joinpath(output_dir, "pheno.csv")
+    output_file = joinpath(output_dir, output_file)
 
     LMGPU.set_blas_threads(16);
     # Read in data.
