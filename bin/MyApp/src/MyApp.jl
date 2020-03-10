@@ -18,13 +18,14 @@ end
 function main()
 
     args = ARGS
-
+    @info "getting args"
     output_dir = args[1]
     output_file = args[2]
     rqtl_file = args[3]
     export_matrix = args[4] == "true"
     r_sign = args[5] == "true"
 
+    @info "getting geno file and pheno file"
     geno_file = joinpath(output_dir,"geno_prob.csv")
     pheno_file = joinpath(output_dir, "pheno.csv")
     output_file = joinpath(output_dir, output_file)

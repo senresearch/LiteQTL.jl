@@ -20,7 +20,7 @@ function lod_score_multithread(m,r::Array{Float64,2}, signed=false)
     end
     return r
 end
- 
+
 function cpurun_with_covar(Y::Array{Float64,2}, G::Array{Float64,2}, X::Array{Float64,2}, n)
     px = calculate_px(X)
     # display(px)
@@ -61,7 +61,7 @@ end
 
 
 ##################### Running CPU Function ###################
-function cpurun(a::Array, b::Array, n::Int, export_matrix::Bool, r_sign=false)
+function cpurun(a::Array, b::Array, n::Int, export_matrix::Bool, r_sign::Bool)
     a_std = get_standardized_matrix(a);
     b_std = get_standardized_matrix(b);
     #step 2: calculate R, matrix of corelation coefficients

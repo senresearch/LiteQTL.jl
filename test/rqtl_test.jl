@@ -2,7 +2,6 @@ using LMGPU
 using Test
 using DelimitedFiles
 using LinearAlgebra
-include(joinpath(@__DIR__, "..", "src", "cpu.jl"))
 
 URL="../data/HC_M2_0606_R.zip"
 output_dir="../data/HIPPO_CLEAN_DATA/"
