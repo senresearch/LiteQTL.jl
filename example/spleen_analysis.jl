@@ -9,6 +9,7 @@ function main()
     export_matrix = false
     output_file = "output.csv"
     rqtl_file = joinpath(@__DIR__, "..", "data", "UTHSC_SPL_RMA_1210.zip")
+    r_sign = false
 
     LMGPU.set_blas_threads(16);
     # Read in data.
@@ -22,10 +23,10 @@ function main()
     # cpu_timing = benchmark(5, cpurun, Y, G,n,export_matrix);
 
     # running analysis.
-    lod = LMGPU.cpurun(Y, G,n,export_matrix);
+    lod = LMGPU.cpurun(Y, G,n,export_matrix, r_sign);
 
     if !export_matrix
-        gmap = LMGPU.get_gmap_info(rqtl_file, "gmap.csv")
+        gmap = LMGPU.get_gmap_info(rqtl_file)
         idx = trunc.(Int, lod[:,1])
         gmap_info = LMGPU.match_gmap(idx, gmap)
         lod = hcat(gmap_info, lod)
@@ -38,8 +39,9 @@ function main()
     writedlm(joinpath(Base.@__DIR__, "..", "data", "results", output_file), lod, ',')
 
     # TODO: generate plot?
-    return lod
+    # return lod
 
 end
+
 
 lod = main()

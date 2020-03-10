@@ -16,14 +16,19 @@ end
 
 
 function main()
-    
-    args = ARGS
 
-    geno_file = args[1]
-    pheno_file = args[2]
-    export_matrix = args[3] == "true"
-    output_file = args[4]
-    rqtl_file = args[5]
+    args = ARGS
+    @info "getting args"
+    output_dir = args[1]
+    output_file = args[2]
+    rqtl_file = args[3]
+    export_matrix = args[4] == "true"
+    r_sign = args[5] == "true"
+
+    @info "getting geno file and pheno file"
+    geno_file = joinpath(output_dir,"geno_prob.csv")
+    pheno_file = joinpath(output_dir, "pheno.csv")
+    output_file = joinpath(output_dir, output_file)
 
     LMGPU.set_blas_threads(16);
     # Read in data.
@@ -37,9 +42,9 @@ function main()
     # cpu_timing = benchmark(5, cpurun, Y, G,n,export_matrix);
 
     # running analysis.
-    lod = LMGPU.cpurun(Y, G,n,export_matrix);
+    lod = LMGPU.cpurun(Y, G,n,export_matrix, r_sign);
     if !export_matrix
-        gmap = LMGPU.get_gmap_info(rqtl_file, "gmap.csv")
+        gmap = LMGPU.get_gmap_info(rqtl_file)
         idx = trunc.(Int, lod[:,1])
         gmap_info = LMGPU.match_gmap(idx, gmap)
         lod = hcat(gmap_info, lod)
@@ -52,12 +57,12 @@ function main()
     println("Lod exported to $output_file")
 
     # TODO: generate plot?
-    # return lod
+    return lod
 
 end
 
 if abspath(PROGRAM_FILE) == @__FILE__
-    real_main()
+    main()
 end
 
 end # module

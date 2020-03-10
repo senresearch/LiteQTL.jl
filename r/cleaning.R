@@ -27,9 +27,9 @@ calc_gprob_update_gmap<-function(gmap_file, cross, ncore=1, error_prob=0.002, st
   map = cross$gmap
   if(pseudomarker){
     map <- insert_pseudomarkers(map, step=step)
-    write.csv(map, file=gmap_file, row.names = FALSE)
+    cat("++++++++ writing out to +++++++++++++ ", gmap_file)
+    write.csv(map, file = gmap_file,row.names = FALSE)
   }
-
   pr <- calc_genoprob(cross, map, error_prob=error_prob, cores=ncore)
   return(pr)
 }
@@ -50,20 +50,25 @@ getGenopr<-function(x){
   return(temp)
 }
 
-clean_and_write<-function(url, geno_output_file="geno_prob.csv", pheno_output_file="pheno.csv", new_gmap_file="gmap.csv",
+clean_and_write<-function(url, output_dir, scan=FALSE,geno_output_file="geno_prob.csv", pheno_output_file="pheno.csv", new_gmap_file="gmap.csv",
                           result_file="rqtl_result.csv",
                           indi_droprate=0.0, trait_droprate=0.0, nseed=100, ncores=1, error_prob=0.002, stepsize=0){
 
   bxd = getdata(url)
   print("got data from url")
 
+  dir.create(output_dir, recursive=TRUE)
+  geno_output_file <- file.path(output_dir, geno_output_file)
+  pheno_output_file <- file.path(output_dir, pheno_output_file)
+  new_gmap_file <- file.path(output_dir, new_gmap_file)
+  result_file <- file.path(output_dir, result_file)
+  scan <- scan == "TRUE"
 
   # innerjoin
   # pick out shared bxd ids in geno and pheno
   bxd_ids <- ind_ids_gnp(bxd)
   cat("dimention of bxd_ids:", dim(bxd_ids))
   joint_bxd <- subset(bxd, ind = bxd_ids)
-
 
   # pick out the ones with no missing data
   filled_ids <- ind_ids(joint_bxd)[complete.cases(joint_bxd$pheno)]
@@ -80,14 +85,15 @@ clean_and_write<-function(url, geno_output_file="geno_prob.csv", pheno_output_fi
   write.csv(prob1, file = geno_output_file)
   print("writing out pheno and geno done")
 
-  print("Doing genome scan")
-  tic()
-  out = scan1(pr, filled_bxd$pheno, cores=32)
-  toc()
-  print("writing out result file.")
-  write.csv(out,file=result_file)
-
+  if(scan){
+    print("Doing genome scan")
+    tic()
+    out = scan1(pr, filled_bxd$pheno, cores=32)
+    toc()
+    print("writing out rqtl result file.")
+    write.csv(out,file=result_file)
+  }
 }
 
 args = commandArgs(trailingOnly=TRUE)
-clean_and_write(args[1], args[2], args[3], args[4], args[5])
+clean_and_write(args[1], args[2], args[3])

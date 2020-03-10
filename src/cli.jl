@@ -71,3 +71,5 @@ function parse_data_cleaning_commandline()
 
     return parse_args(s)
 end
+
+@__FILE__

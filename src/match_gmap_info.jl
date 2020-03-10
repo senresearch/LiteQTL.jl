@@ -16,15 +16,23 @@ function extension(url::String)
     end
 end
 
-function get_gmap_info(rqtl_file, gmap_file)
+function get_gmap_info(rqtl_file)
 
+    # if passing in rqtl_file as a zip, extract gmap file.
     if extension(rqtl_file) == ".zip"
         dir = ZipFile.Reader(rqtl_file)
-        f = findfile(dir, gmap_file)
+        f = findfile(dir, "gmap.csv")
         gmap = readdlm(f, ',')
         close(dir)
+    # if passing in just gmap file.
+    elseif extension(rqtl_file) == ".csv"
+        if occursin("gmap.csv", rqtl_file)
+            gmap = readdlm(rqtl_file, ',')
+        else
+            error("no gmap file found.")
+        end
     else
-        error("Rqtl file is not passed in as a zip, need to handle this.")
+        error("Rqtl file is not passed in as a .zip, need to handle this.")
     end
     return gmap
 
@@ -37,10 +45,3 @@ function match_gmap(idx::Array{Int64,1}, gmap)
     end
     return tmp
 end
-
-# rqtl_file = joinpath(@__DIR__, "..", "data", "UTHSC_SPL_RMA_1210.zip")
-# gmap = LMGPU.get_gmap_info(rqtl_file, "gmap.csv")
-# dir = ZipFile.Reader(rqtl_file)
-# f = findfile(dir, "gmap.csv")
-# gmap = readdlm(f, ',')
-# @show gmap

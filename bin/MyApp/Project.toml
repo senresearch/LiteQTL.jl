@@ -5,3 +5,5 @@ version = "0.1.0"
 
 [deps]
 DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
+LMGPU = "80ae3f88-c08a-44f8-80fe-4bd6150eb394"
+PackageCompiler = "9b87118b-4619-50d2-8e1e-99f35a4d4d9d"

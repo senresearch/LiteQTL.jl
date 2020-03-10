@@ -1,8 +1,6 @@
 using PackageCompiler
-function build_bin(file)
-    bin_path = joinpath(@__DIR__, "..", "bin")
-    build_executable(file, builddir = bin_path)
-end
 
-file = joinpath(@__DIR__, "main.jl")
-build_bin(file)
+app_dir = joinpath(@__DIR__, "MyApp")
+compile_dir = joinpath(@__DIR__, "MyAppCompiled")
+precompile_file = joinpath(app_dir,"precompile_app.jl")
+create_app(app_dir, compile_dir, force=true,incremental=true,precompile_execution_file=precompile_file)

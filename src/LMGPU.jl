@@ -20,6 +20,6 @@ include("match_gmap_info.jl")
 # include("cli.jl")
 
 #put all your public functions (functions that you want user to use) here.
-export get_geno_data, get_pheno_data, cpurun #, gpurun
+export get_geno_data, get_pheno_data, cpurun, get_gmap_info, match_gmap #, gpurun
 
 end # module
