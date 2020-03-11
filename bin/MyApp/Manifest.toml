@@ -21,14 +21,11 @@ uuid = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
 
 [[LMGPU]]
 deps = ["DelimitedFiles", "LinearAlgebra", "ZipFile"]
-git-tree-sha1 = "679aa956a2ccea5dfbae1a31dcfd90a20069bbe0"
-repo-rev = "master"
-repo-url = "https://github.com/ChelseaTrotter/LMGPU.jl"
+path = "/home/xhu/.julia/dev/LMGPU"
 uuid = "80ae3f88-c08a-44f8-80fe-4bd6150eb394"
-version = "0.1.0"
+version = "0.1.1"
 
 [[LibGit2]]
-deps = ["Printf"]
 uuid = "76f85450-5226-5b5a-8eaa-529ad045b433"
 
 [[Libdl]]
@@ -55,7 +52,7 @@ uuid = "9b87118b-4619-50d2-8e1e-99f35a4d4d9d"
 version = "1.0.2"
 
 [[Pkg]]
-deps = ["Dates", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "UUIDs"]
+deps = ["Dates", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "Test", "UUIDs"]
 uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 
 [[Printf]]
