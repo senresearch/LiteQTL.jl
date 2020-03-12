@@ -6,7 +6,7 @@ URL="./data/HC_M2_0606_R.zip"
 output_dir="./data/HIPPO_CLEAN_DATA/"
 scan="FALSE"
 
-# time Rscript --vanilla ./r/cleaning.R $URL $output_dir $scan
+time Rscript --vanilla ./r/cleaning.R $URL $output_dir $scan
 #
 export_matrix="false"
 output_file="julia_result.csv"

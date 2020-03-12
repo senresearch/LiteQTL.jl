@@ -21,7 +21,9 @@ uuid = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
 
 [[LMGPU]]
 deps = ["DelimitedFiles", "LinearAlgebra", "ZipFile"]
-path = "/home/xhu/.julia/dev/LMGPU"
+git-tree-sha1 = "31b3fff451883b0620eb0cb89c711775d199f71e"
+repo-rev = "master"
+repo-url = "https://github.com/ChelseaTrotter/LMGPU.jl"
 uuid = "80ae3f88-c08a-44f8-80fe-4bd6150eb394"
 version = "0.1.1"
 
