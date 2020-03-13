@@ -10,7 +10,7 @@ output_dir="./data/HIPPO_CLEAN_DATA/"
 scan="FALSE"
 
 time Rscript --vanilla ./r/cleaning.R $URL $output_dir $scan
-#
+
 # If export_matrix set to true, then the entire LOD score matrix will be exported. If false, only maximum lod and related gmpa info will be exported.
 export_matrix="false"
 # genome scan results.
