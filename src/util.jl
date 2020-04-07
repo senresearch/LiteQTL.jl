@@ -1,4 +1,3 @@
-using LinearAlgebra
 
 function set_blas_threads(nthread)
     LinearAlgebra.BLAS.set_num_threads(nthread)

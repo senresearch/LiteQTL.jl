@@ -1,7 +1,12 @@
 
+function calculate_r(a::CuArray,b::CuArray)
+    return CuArrays.CUBLAS.gemm('T', 'N', a,b);
+end
+
 function get_pheno_block_size(n::Int, m::Int, p::Int)
     total_data_size = (n*m + n*p + m*p) * sizeof(Float32) # get the number of bytes in total
     # gpu_mem = get_gpu_mem_size()*0.9 # can not use all of gpu memory, need to leave some for intermediate result.
+    # CUDAdrv.available_memory()
     gpu_mem = 16914055168 * 0.9 # can not use all of gpu memory, need to leave some for intermediate result.
     #if m is too big for gpu memory, I need to seperate m into several blocks to process
     block_size = Int(ceil((gpu_mem - (n*p))/((n+p) * sizeof(Float32))))
@@ -59,7 +64,8 @@ function lod_kernel(input, MAX,n)
     tid = (blockIdx().x-1) * blockDim().x + threadIdx().x
     if(tid < MAX+1)
         r_square = (input[tid]/n)^2
-        input[tid] = (-n/Float32(2.0)) * CUDAnative.log(Float32(1.0)-r_square)
+        input[tid] = (-n/Float32(2.0)) * CUDAnative.log10(Float32(1.0)-r_square)
+        # TODO: NEED to capture sign of r[i,j]
     end
     return
 end

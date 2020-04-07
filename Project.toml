@@ -1,14 +1,12 @@
 name = "LMGPU"
 uuid = "80ae3f88-c08a-44f8-80fe-4bd6150eb394"
 authors = ["Chelsea Trotter", "Sen Research"]
-version = "0.1.0"
+version = "0.1.1"
 
 [deps]
-CUDAdrv = "c5f51814-7f29-56b8-a69c-e4d8f6be1fde"
-CUDAnative = "be33ccc6-a3ff-5ff2-a52e-74243cff1e17"
-CuArrays = "3a865a2d-5b23-5a0f-bc46-62713ec82fae"
 DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+ZipFile = "a5390f91-8eb1-5f08-bee0-b1d1ffed6cea"
 
 [compat]
 Documenter = "0.24"
