@@ -69,12 +69,13 @@ function cpurun(a::Array, b::Array, n::Int, export_matrix::Bool, r_sign::Bool)
     #step 3: calculate r square and lod score
     # lod = lod_score(n, r);
     lod = lod_score_multithread(n,r,r_sign)
+    println("Scantime is $scantime.")
+
     if export_matrix
         println("exporting matrix.")
         return lod
     end
     println("exporting max lod")
-
     return find_max_idx_value(lod,r_sign)
 
 end

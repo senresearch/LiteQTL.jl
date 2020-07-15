@@ -1,13 +1,13 @@
 
 function get_standardized_matrix(m)
     for col in 1:size(m)[2]
-        summ::Float32 = 0.0
+        summ::Float64 = 0.0
         rows = size(m)[1]
         for row in 1:rows
             summ += m[row, col]
         end
         mean = summ/rows
-        sums::Float32 = 0.0
+        sums::Float64 = 0.0
         for row in 1:rows
             sums += (m[row,col] - mean)^2
         end
