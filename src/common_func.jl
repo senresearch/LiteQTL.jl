@@ -20,7 +20,7 @@ function get_standardized_matrix(m)
 
 end
 
-function calculate_px(x::Array{Float64,2})
+function calculate_px(x::Array{<:Real,2})
     XtX = transpose(x)*x
     result = X*inv(XtX)*transpose(x)
     # display(result)

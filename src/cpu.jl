@@ -1,5 +1,5 @@
 
-function calculate_r(a::Array,b::Array)
+function calculate_r(a::Array{<:Real,2},b::Array{<:Real, 2})
     return LinearAlgebra.BLAS.gemm('T', 'N', a,b);
 end
 
@@ -7,13 +7,13 @@ end
 # Because the sign will be lost when squaring, and we need to preserve the sign,
 # since the LOD score is r_square, and is always going to be positive, we put the sign back to r_square.
 # This will save storage and output time.
-function lod_score_multithread(m,r::Array{Float64,2}, signed=false)
-    n = convert(Float64,m)
+function lod_score_multithread(m,r::Array{<:Real,2}, signed=false)
+    n = m
     Threads.@threads for j in 1:size(r)[2]
     # for j in 1:size(r)[2]
         for i in 1:size(r)[1]
-            r_square::Float64 = (r[i,j]/n)^2
-            tmp = -n/Float64(2.0) * log10(Float64(1.0)-r_square)
+            r_square = (r[i,j]/n)^2
+            tmp = -n/2.0 * log10(1.0-r_square)
             sign = (signbit(r[i,j]) && signed) ? -1 : 1
             r[i,j] = tmp * sign
         end
@@ -21,7 +21,7 @@ function lod_score_multithread(m,r::Array{Float64,2}, signed=false)
     return r
 end
 
-function cpurun_with_covar(Y::Array{Float64,2}, G::Array{Float64,2}, X::Array{Float64,2}, n)
+function cpurun_with_covar(Y::Array{<:Real,2}, G::Array{<:Real,2}, X::Array{<:Real,2}, n)
     px = calculate_px(X)
     # display(px)
     y_hat = LinearAlgebra.BLAS.gemm('N', 'N', px, Y)
@@ -36,8 +36,8 @@ function cpurun_with_covar(Y::Array{Float64,2}, G::Array{Float64,2}, X::Array{Fl
 end
 
 
-function find_max_idx_value(lod::Array{Float64,2}, signed=false)
-    max_array = Array{Float64,2}(undef, size(lod)[1], 2)
+function find_max_idx_value(lod::Array{<:Real,2}, signed=false)
+    max_array = Array{typeof(lod[1,1]),2}(undef, size(lod)[1], 2)
     Threads.@threads for i in 1:size(lod)[1]
         temp = abs(lod[i,1])
         idx = 1
@@ -61,7 +61,7 @@ end
 
 
 ##################### Running CPU Function ###################
-function cpurun(a::Array, b::Array, n::Int, export_matrix::Bool, r_sign::Bool)
+function cpurun(a::Array{<:Real, 2}, b::Array{<:Real, 2}, n::Int, export_matrix::Bool, r_sign::Bool)
     a_std = get_standardized_matrix(a);
     b_std = get_standardized_matrix(b);
     #step 2: calculate R, matrix of corelation coefficients
@@ -69,7 +69,6 @@ function cpurun(a::Array, b::Array, n::Int, export_matrix::Bool, r_sign::Bool)
     #step 3: calculate r square and lod score
     # lod = lod_score(n, r);
     lod = lod_score_multithread(n,r,r_sign)
-    println("Scantime is $scantime.")
 
     if export_matrix
         println("exporting matrix.")

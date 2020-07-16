@@ -3,18 +3,18 @@ function calculate_r(a::CuArray,b::CuArray)
     return CuArrays.CUBLAS.gemm('T', 'N', a,b);
 end
 
-function get_pheno_block_size(n::Int, m::Int, p::Int)
-    total_data_size = (n*m + n*p + m*p) * sizeof(Float64) # get the number of bytes in total
-    # gpu_mem = get_gpu_mem_size()*0.9 # can not use all of gpu memory, need to leave some for intermediate result.
-    # CUDAdrv.available_memory()
-    gpu_mem = 16914055168 * 0.9 # can not use all of gpu memory, need to leave some for intermediate result.
-    #if m is too big for gpu memory, I need to seperate m into several blocks to process
-    block_size = Int(ceil((gpu_mem - (n*p))/((n+p) * sizeof(Float64))))
-    num_block = Int(ceil(m/block_size))
-    return (num_block, block_size)
-end
+# function get_pheno_block_size(n::Int, m::Int, p::Int)
+#     total_data_size = (n*m + n*p + m*p) * sizeof(Float64) # get the number of bytes in total
+#     # gpu_mem = get_gpu_mem_size()*0.9 # can not use all of gpu memory, need to leave some for intermediate result.
+#     # CUDAdrv.available_memory()
+#     gpu_mem = 16914055168 * 0.9 # can not use all of gpu memory, need to leave some for intermediate result.
+#     #if m is too big for gpu memory, I need to seperate m into several blocks to process
+#     block_size = Int(ceil((gpu_mem - (n*p))/((n+p) * sizeof(Float64))))
+#     num_block = Int(ceil(m/block_size))
+#     return (num_block, block_size)
+# end
 
-function gpurun(Y::Array{Float64,2}, G::Array{Float64,2},n,m,p)
+function gpurun(Y::Array{<:Real,2}, G::Array{<:Real,2},n,m,p)
     (num_block, block_size) = get_pheno_block_size(n,m,p)
     # println("seperated into $num_block blocks, containing $block_size individual per block. ")
 
@@ -45,7 +45,7 @@ function gpurun(Y::Array{Float64,2}, G::Array{Float64,2},n,m,p)
     return lod
 end
 
-function gpu_square_lod(d_r::CuArray{Float64,2},n,m,p)
+function gpu_square_lod(d_r::CuArray{<:Real,2},n,m,p)
     #Get total number of threads
     ndrange = prod(size(d_r))
     #Get maximum number of threads per block
@@ -64,7 +64,7 @@ function lod_kernel(input, MAX,n)
     tid = (blockIdx().x-1) * blockDim().x + threadIdx().x
     if(tid < MAX+1)
         r_square = (input[tid]/n)^2
-        input[tid] = (-n/Float64(2.0)) * CUDAnative.log10(Float64(1.0)-r_square)
+        input[tid] = (-n/2.0) * CUDAnative.log10(1.0-r_square)
         # TODO: NEED to capture sign of r[i,j]
     end
     return
