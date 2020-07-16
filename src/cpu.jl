@@ -8,12 +8,15 @@ end
 # since the LOD score is r_square, and is always going to be positive, we put the sign back to r_square.
 # This will save storage and output time.
 function lod_score_multithread(m,r::Array{<:Real,2}, signed=false)
-    n = m
+    n = convert(typeof(r[1,1]), m)
+    two = convert(typeof(r[1,1]), 2)
+    one = convert(typeof(r[1,1]), 2)
+
     Threads.@threads for j in 1:size(r)[2]
     # for j in 1:size(r)[2]
         for i in 1:size(r)[1]
             r_square = (r[i,j]/n)^2
-            tmp = -n/2.0 * log10(1.0-r_square)
+            tmp = -n/two * log10(one-r_square)
             sign = (signbit(r[i,j]) && signed) ? -1 : 1
             r[i,j] = tmp * sign
         end

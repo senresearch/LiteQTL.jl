@@ -3,23 +3,23 @@ function calculate_r(a::CuArray,b::CuArray)
     return CuArrays.CUBLAS.gemm('T', 'N', a,b);
 end
 
-# function get_pheno_block_size(n::Int, m::Int, p::Int)
-#     total_data_size = (n*m + n*p + m*p) * sizeof(Float64) # get the number of bytes in total
-#     # gpu_mem = get_gpu_mem_size()*0.9 # can not use all of gpu memory, need to leave some for intermediate result.
-#     # CUDAdrv.available_memory()
-#     gpu_mem = 16914055168 * 0.9 # can not use all of gpu memory, need to leave some for intermediate result.
-#     #if m is too big for gpu memory, I need to seperate m into several blocks to process
-#     block_size = Int(ceil((gpu_mem - (n*p))/((n+p) * sizeof(Float64))))
-#     num_block = Int(ceil(m/block_size))
-#     return (num_block, block_size)
-# end
+function get_pheno_block_size(n::Int, m::Int, p::Int, datatype::DataType)
+    total_data_size = (n*m + n*p + m*p) * sizeof(datatype) # get the number of bytes in total
+    # gpu_mem = get_gpu_mem_size()*0.9 # can not use all of gpu memory, need to leave some for intermediate result.
+    # CUDAdrv.available_memory()
+    gpu_mem = 16914055168 * 0.9 # can not use all of gpu memory, need to leave some for intermediate result.
+    #if m is too big for gpu memory, I need to seperate m into several blocks to process
+    block_size = Int(ceil((gpu_mem - (n*p))/((n+p) * sizeof(datatype))))
+    num_block = Int(ceil(m/block_size))
+    return (num_block, block_size)
+end
 
 function gpurun(Y::Array{<:Real,2}, G::Array{<:Real,2},n,m,p)
-    (num_block, block_size) = get_pheno_block_size(n,m,p)
+    (num_block, block_size) = get_pheno_block_size(n,m,p, typeof(Y[1,1]))
     # println("seperated into $num_block blocks, containing $block_size individual per block. ")
 
     g_std = get_standardized_matrix(G);
-    lod = zeros(0,2)
+    lod = convert(typeof(Y[1,1]) ,zeros(0,2))
     d_g = CuArray(g_std);
     for i = 1:num_block
         # i = 1
@@ -61,6 +61,7 @@ end
 ## GPU kernel ##
 ################
 function lod_kernel(input, MAX,n)
+    # TODO: n, 1, 2, do they need to be converted to correct data type for better performance?
     tid = (blockIdx().x-1) * blockDim().x + threadIdx().x
     if(tid < MAX+1)
         r_square = (input[tid]/n)^2
