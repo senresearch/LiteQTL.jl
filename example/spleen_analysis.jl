@@ -4,12 +4,10 @@ using DelimitedFiles
 function main()
     # if no input args.
     geno_file = joinpath(@__DIR__, "..", "data", "SPLEEN_CLEAN_DATA", "geno_prob.csv")
-    # geno_file = joinpath(@__DIR__, "..", "data", "geno_prob.csv")
     pheno_file = joinpath(@__DIR__, "..", "data","SPLEEN_CLEAN_DATA", "pheno.csv")
     export_matrix = false
     output_file = "output.csv"
     rqtl_file = joinpath(@__DIR__, "..", "data", "UTHSC_SPL_RMA_1210.zip")
-    r_sign = false
 
     LMGPU.set_blas_threads(16);
     # Read in data.
@@ -23,20 +21,20 @@ function main()
     # cpu_timing = benchmark(5, cpurun, Y, G,n,export_matrix);
 
     # running analysis.
-    lodc = LMGPU.cpurun(Y, G,n,export_matrix, r_sign);
+    lodc = LMGPU.cpurun(Y, G,n,export_matrix);
     lodg = LMGPU.gpurun(Y, G,n,m,p)
 
     display(lodc[1:20, 1:2])
     display(lodg[1:20, 1:2])
 
-    # if !export_matrix
-    #     gmap = LMGPU.get_gmap_info(rqtl_file)
-    #     idx = trunc.(Int, lod[:,1])
-    #     gmap_info = LMGPU.match_gmap(idx, gmap)
-    #     lod = hcat(gmap_info, lod)
-    #     header = reshape(["marker", "chr", "pos", "idx", "lod"], 1,:)
-    #     lod = vcat(header, lod)
-    # end
+    if !export_matrix
+        gmap = LMGPU.get_gmap_info(rqtl_file)
+        idx = trunc.(Int, lod[:,1])
+        gmap_info = LMGPU.match_gmap(idx, gmap)
+        lod = hcat(gmap_info, lod)
+        header = reshape(["marker", "chr", "pos", "idx", "lod"], 1,:)
+        lod = vcat(header, lod)
+    end
 
 
     # write output to file

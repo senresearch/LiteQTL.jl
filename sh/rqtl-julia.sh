@@ -17,7 +17,6 @@ export_matrix="false"
 output_file="julia_result.csv"
 # rqtl_file is needed to find gmap.csv.
 rqtl_file="./data/HC_M2_0606_R.zip"
-# Preserve the sign of original r before squaring? Default is false
-r_sign="false"
 
-time JULIA_NUM_THREADS=16 ./bin/MyAppCompiled/bin/MyApp $output_dir $output_file $rqtl_file $export_matrix $r_sign
+
+time JULIA_NUM_THREADS=16 ./bin/MyAppCompiled/bin/MyApp $output_dir $output_file $rqtl_file $export_matrix

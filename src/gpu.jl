@@ -65,7 +65,6 @@ function lod_kernel(input, MAX,n)
     if(tid < MAX+1)
         r_square = (input[tid]/n)^2
         input[tid] = (-n/2.0) * CUDA.log10(1.0-r_square)
-        # TODO: NEED to capture sign of r[i,j]
     end
     return
 end
