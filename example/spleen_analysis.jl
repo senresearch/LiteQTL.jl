@@ -19,22 +19,23 @@ function main()
     p = size(G,2)
     println("******* Indivuduals n: $n, Traits m: $m, Markers p: $p ****************");
     # cpu_timing = benchmark(5, cpurun, Y, G,n,export_matrix);
+    # println("CPU timing: $(cpu_timing[3])")
 
     # running analysis.
-    lodc = LMGPU.cpurun(Y, G,n,export_matrix);
-    lodg = LMGPU.gpurun(Y, G,n,m,p)
+    @time lodc = LMGPU.cpurun(Y, G,n,export_matrix);
+    # lodg = LMGPU.gpurun(Y, G,n,m,p)
 
     display(lodc[1:20, 1:2])
-    display(lodg[1:20, 1:2])
+    # display(lodg[1:20, 1:2])
 
-    if !export_matrix
-        gmap = LMGPU.get_gmap_info(rqtl_file)
-        idx = trunc.(Int, lod[:,1])
-        gmap_info = LMGPU.match_gmap(idx, gmap)
-        lod = hcat(gmap_info, lod)
-        header = reshape(["marker", "chr", "pos", "idx", "lod"], 1,:)
-        lod = vcat(header, lod)
-    end
+    # if !export_matrix
+    #     gmap = LMGPU.get_gmap_info(rqtl_file)
+    #     idx = trunc.(Int, lod[:,1])
+    #     gmap_info = LMGPU.match_gmap(idx, gmap)
+    #     lod = hcat(gmap_info, lod)
+    #     header = reshape(["marker", "chr", "pos", "idx", "lod"], 1,:)
+    #     lod = vcat(header, lod)
+    # end
 
 
     # write output to file
