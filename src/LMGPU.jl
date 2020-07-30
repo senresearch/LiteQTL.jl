@@ -5,6 +5,7 @@ using DelimitedFiles
 using LinearAlgebra
 using Base.Threads
 using ZipFile
+using CUDA
 # using CuArrays
 # using CUDAnative
 # using CUDAdrv
@@ -14,7 +15,7 @@ using ZipFile
 include("data_io.jl")
 include("util.jl")
 include("cpu.jl")
-# include("gpu.jl")
+include("gpu.jl")
 include("common_func.jl")
 include("match_gmap_info.jl")
 # include("cli.jl")

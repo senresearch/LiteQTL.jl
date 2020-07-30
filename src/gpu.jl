@@ -1,6 +1,6 @@
 
 function calculate_r(a::CuArray,b::CuArray)
-    return CuArrays.CUBLAS.gemm('T', 'N', a,b);
+    return CUDA.CUBLAS.gemm('T', 'N', a,b);
 end
 
 function get_pheno_block_size(n::Int, m::Int, p::Int, datatype::DataType)
@@ -19,7 +19,7 @@ function gpurun(Y::Array{<:Real,2}, G::Array{<:Real,2},n,m,p)
     # println("seperated into $num_block blocks, containing $block_size individual per block. ")
 
     g_std = get_standardized_matrix(G);
-    lod = convert(typeof(Y[1,1]) ,zeros(0,2))
+    lod = convert(Array{typeof(Y[1,1]), 2},zeros(0,2))
     d_g = CuArray(g_std);
     for i = 1:num_block
         # i = 1
@@ -49,12 +49,11 @@ function gpu_square_lod(d_r::CuArray{<:Real,2},n,m,p)
     #Get total number of threads
     ndrange = prod(size(d_r))
     #Get maximum number of threads per block
-    dev = device()
-    threads = attribute(dev, CUDAdrv.WARP_SIZE)
-    blocks = min(Int(ceil(ndrange/threads)), attribute(dev, CUDAdrv.MAX_GRID_DIM_X))
+    dev = CUDA.device()
+    threads = CUDA.warpsize(dev)
+    blocks = min(Int(ceil(ndrange/threads)), attribute(dev, CUDA.CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_X))
     @cuda blocks=blocks threads=threads lod_kernel(d_r, ndrange,n)
     return @cuda blocks=blocks threads=threads reduce_kernel(d_r,m,p)
-
 end
 
 ################
@@ -65,7 +64,7 @@ function lod_kernel(input, MAX,n)
     tid = (blockIdx().x-1) * blockDim().x + threadIdx().x
     if(tid < MAX+1)
         r_square = (input[tid]/n)^2
-        input[tid] = (-n/2.0) * CUDAnative.log10(1.0-r_square)
+        input[tid] = (-n/2.0) * CUDA.log10(1.0-r_square)
         # TODO: NEED to capture sign of r[i,j]
     end
     return
