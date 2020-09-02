@@ -5,16 +5,16 @@ end
 
 function get_pheno_block_size(n::Int, m::Int, p::Int, datatype::DataType)
     total_data_size = (n*m + n*p + m*p) * sizeof(datatype) # get the number of bytes in total
-    # gpu_mem = get_gpu_mem_size()*0.9 # can not use all of gpu memory, need to leave some for intermediate result.
-    # CUDAdrv.available_memory()
-    gpu_mem = 16914055168 * 0.9 # can not use all of gpu memory, need to leave some for intermediate result.
+    gpu_mem = CUDA.available_memory() * 0.9 # can not use all of gpu memory, need to leave some for intermediate result.
     #if m is too big for gpu memory, I need to seperate m into several blocks to process
     block_size = Int(ceil((gpu_mem - (n*p))/((n+p) * sizeof(datatype))))
     num_block = Int(ceil(m/block_size))
     return (num_block, block_size)
 end
 
-function gpurun(Y::Array{<:Real,2}, G::Array{<:Real,2},n,m,p)
+function gpurun(Y::Array{<:Real,2}, G::Array{<:Real,2},n)
+    m = size(Y,2)
+    p = size(G,2)
     (num_block, block_size) = get_pheno_block_size(n,m,p, typeof(Y[1,1]))
     # println("seperated into $num_block blocks, containing $block_size individual per block. ")
 

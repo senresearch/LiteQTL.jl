@@ -1,8 +1,8 @@
-function calculate_r(a::Array{<:Real,2},b::Array{<:Real, 2})
+function calculate_r(a::AbstractArray{<:Real,2},b::AbstractArray{<:Real, 2})
     return LinearAlgebra.BLAS.gemm('T', 'N', a,b);
 end
 
-function lod_score_multithread(m,r::Array{Float64, 2})
+function lod_score_multithread(m,r::AbstractArray{Float64, 2})
     n = m 
     Threads.@threads for j in 1:size(r)[2]
         for i in 1:size(r)[1]
@@ -14,7 +14,7 @@ function lod_score_multithread(m,r::Array{Float64, 2})
     return r
 end
 
-function lod_score_multithread(m,r::Array{Float32,2})
+function lod_score_multithread(m,r::AbstractArray{Float32,2})
     n = m 
     Threads.@threads for j in 1:size(r)[2]
         for i in 1:size(r)[1]
@@ -26,7 +26,7 @@ function lod_score_multithread(m,r::Array{Float32,2})
     return r
 end
 
-function cpurun_with_covar(Y::Array{<:Real,2}, G::Array{<:Real,2}, X::Array{<:Real,2}, n)
+function cpurun_with_covar(Y::AbstractArray{<:Real,2}, G::AbstractArray{<:Real,2}, X::AbstractArray{<:Real,2}, n)
     px = calculate_px(X)
     # display(px)
     y_hat = LinearAlgebra.BLAS.gemm('N', 'N', px, Y)
@@ -41,9 +41,10 @@ function cpurun_with_covar(Y::Array{<:Real,2}, G::Array{<:Real,2}, X::Array{<:Re
 end
 
 
-function find_max_idx_value(lod::Array{<:Real,2})
+function find_max_idx_value(lod::AbstractArray{<:Real,2})
     max_array = Array{typeof(lod[1,1]),2}(undef, size(lod)[1], 2)
-    Threads.@threads for i in 1:size(lod)[1]
+    # Threads.@threads for i in 1:size(lod)[1]
+        for i in 1:size(lod)[1]
         temp = lod[i, 1]
         idx = 1
         for j in 2:size(lod)[2]
@@ -60,7 +61,7 @@ end
 
 
 ##################### Running CPU Function ###################
-function cpurun(a::Array{<:Real, 2}, b::Array{<:Real, 2}, n::Int, export_matrix::Bool)
+function cpurun(a::AbstractArray{<:Real, 2}, b::AbstractArray{<:Real, 2}, n::Int, maxlod::Bool)
     a_std = get_standardized_matrix(a);
     b_std = get_standardized_matrix(b);
     #step 2: calculate R, matrix of corelation coefficients
@@ -69,11 +70,13 @@ function cpurun(a::Array{<:Real, 2}, b::Array{<:Real, 2}, n::Int, export_matrix:
     # lod = lod_score(n, r);
     lod = lod_score_multithread(n,r)
 
-    if export_matrix
+    if maxlod 
+        println("exporting max lod")
+        return find_max_idx_value(lod)
+    else 
         println("exporting matrix.")
         return lod
     end
-    println("exporting max lod")
-    return find_max_idx_value(lod)
+
 
 end
