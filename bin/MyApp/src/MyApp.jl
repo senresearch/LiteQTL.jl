@@ -23,7 +23,6 @@ function main()
     output_file = args[2]
     rqtl_file = args[3]
     export_matrix = args[4] == "true"
-    r_sign = args[5] == "true"
 
     @info "getting geno file and pheno file"
     geno_file = joinpath(output_dir,"geno_prob.csv")
@@ -42,7 +41,7 @@ function main()
     # cpu_timing = benchmark(5, cpurun, Y, G,n,export_matrix);
 
     # running analysis.
-    lod = LMGPU.cpurun(Y, G,n,export_matrix, r_sign);
+    lod = LMGPU.cpurun(Y, G,n,export_matrix);
     if !export_matrix
         gmap = LMGPU.get_gmap_info(rqtl_file)
         idx = trunc.(Int, lod[:,1])

@@ -1,25 +1,25 @@
 
 function calculate_r(a::CuArray,b::CuArray)
-    return CuArrays.CUBLAS.gemm('T', 'N', a,b);
+    return CUDA.CUBLAS.gemm('T', 'N', a,b);
 end
 
-function get_pheno_block_size(n::Int, m::Int, p::Int)
-    total_data_size = (n*m + n*p + m*p) * sizeof(Float32) # get the number of bytes in total
-    # gpu_mem = get_gpu_mem_size()*0.9 # can not use all of gpu memory, need to leave some for intermediate result.
-    # CUDAdrv.available_memory()
-    gpu_mem = 16914055168 * 0.9 # can not use all of gpu memory, need to leave some for intermediate result.
+function get_pheno_block_size(n::Int, m::Int, p::Int, datatype::DataType)
+    total_data_size = (n*m + n*p + m*p) * sizeof(datatype) # get the number of bytes in total
+    gpu_mem = CUDA.available_memory() * 0.9 # can not use all of gpu memory, need to leave some for intermediate result.
     #if m is too big for gpu memory, I need to seperate m into several blocks to process
-    block_size = Int(ceil((gpu_mem - (n*p))/((n+p) * sizeof(Float32))))
+    block_size = Int(ceil((gpu_mem - (n*p))/((n+p) * sizeof(datatype))))
     num_block = Int(ceil(m/block_size))
     return (num_block, block_size)
 end
 
-function gpurun(Y::Array{Float32,2}, G::Array{Float32,2},n,m,p)
-    (num_block, block_size) = get_pheno_block_size(n,m,p)
+function gpurun(Y::Array{<:Real,2}, G::Array{<:Real,2},n)
+    m = size(Y,2)
+    p = size(G,2)
+    (num_block, block_size) = get_pheno_block_size(n,m,p, typeof(Y[1,1]))
     # println("seperated into $num_block blocks, containing $block_size individual per block. ")
 
     g_std = get_standardized_matrix(G);
-    lod = zeros(0,2)
+    lod = convert(Array{typeof(Y[1,1]), 2},zeros(0,2))
     d_g = CuArray(g_std);
     for i = 1:num_block
         # i = 1
@@ -45,27 +45,26 @@ function gpurun(Y::Array{Float32,2}, G::Array{Float32,2},n,m,p)
     return lod
 end
 
-function gpu_square_lod(d_r::CuArray{Float32,2},n,m,p)
+function gpu_square_lod(d_r::CuArray{<:Real,2},n,m,p)
     #Get total number of threads
     ndrange = prod(size(d_r))
     #Get maximum number of threads per block
-    dev = device()
-    threads = attribute(dev, CUDAdrv.WARP_SIZE)
-    blocks = min(Int(ceil(ndrange/threads)), attribute(dev, CUDAdrv.MAX_GRID_DIM_X))
+    dev = CUDA.device()
+    threads = CUDA.warpsize(dev)
+    blocks = min(Int(ceil(ndrange/threads)), attribute(dev, CUDA.CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_X))
     @cuda blocks=blocks threads=threads lod_kernel(d_r, ndrange,n)
     return @cuda blocks=blocks threads=threads reduce_kernel(d_r,m,p)
-
 end
 
 ################
 ## GPU kernel ##
 ################
 function lod_kernel(input, MAX,n)
+    # TODO: n, 1, 2, do they need to be converted to correct data type for better performance?
     tid = (blockIdx().x-1) * blockDim().x + threadIdx().x
     if(tid < MAX+1)
         r_square = (input[tid]/n)^2
-        input[tid] = (-n/Float32(2.0)) * CUDAnative.log10(Float32(1.0)-r_square)
-        # TODO: NEED to capture sign of r[i,j]
+        input[tid] = (-n/2.0) * CUDA.log10(1.0-r_square)
     end
     return
 end

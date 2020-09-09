@@ -17,10 +17,9 @@ export_matrix="false"
 output_file="julia_result.csv"
 # rqtl_file is needed to find gmap.csv.
 rqtl_file=URL
-r_sign="false"
 julia_scan_script = joinpath(@__DIR__, "..", "bin", "MyApp", "src", "MyApp.jl")
 
-run(`julia $julia_scan_script $output_dir $output_file $rqtl_file $export_matrix $r_sign`)
+run(`julia $julia_scan_script $output_dir $output_file $rqtl_file $export_matrix`)
 
 # readdlm(file, ','; skipstart=1)[:,2:end-1]
 @info "Getting Rqtl scan results"
