@@ -16,7 +16,7 @@ end
 function get_pheno_data(file, datatype; transposed=true)
 
     #first column is individual ID such as : BXD1
-    pheno = readdlm(file, ','; skipstart=1)
+    pheno = readdlm(file, ','; skipstart=1)[:,2:end]
     pheno = convert(Array{datatype,2}, pheno)
     # pheno = convert2float.(pheno, datatype)
     if transposed 

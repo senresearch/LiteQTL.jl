@@ -71,7 +71,7 @@ function cpurun(a::AbstractArray{<:Real, 2}, b::AbstractArray{<:Real, 2}, n::Int
     lod = lod_score_multithread(n,r)
 
     if maxlod 
-        println("exporting max lod")
+        println("Calculating max lod")
         return find_max_idx_value(lod)
     else 
         println("exporting matrix.")
