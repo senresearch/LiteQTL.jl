@@ -12,6 +12,10 @@ end
 #     return convert(Array{datatype,2}, pheno)
 # end
 
+function try_string2num(num)
+    return tryparse(Float64,num) != nothing
+end
+
 
 function get_pheno_data(file, datatype; transposed=true)
 
@@ -19,6 +23,11 @@ function get_pheno_data(file, datatype; transposed=true)
     pheno = readdlm(file, ','; skipstart=1)[:,2:end]
     pheno = convert(Array{datatype,2}, pheno)
     # pheno = convert2float.(pheno, datatype)
+    if !isa(pheno[1,1], Number) && !try_string2num(pheno[1,1])
+        @info "Removing row names of phenotype. "
+        pheno = pheno[:, 2:end]
+    end
+
     if transposed 
         return transpose(pheno) |> collect
     else 
