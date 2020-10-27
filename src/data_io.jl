@@ -35,14 +35,9 @@ end
 
 function get_pheno_data(file, datatype; transposed=true)
 
-    #first column is individual ID such as : BXD1
-    pheno = readdlm(file, ','; skipstart=1)[:,2:end]
+    #first column is individual ID such as : BXD1 , need to be removed. 
+    pheno = readdlm(file, ','; skipstart=1)[:, 2:end]
     pheno = convert(Array{datatype,2}, pheno)
-    # pheno = convert2float.(pheno, datatype)
-    if !isa(pheno[1,1], Number) && !try_string2num(pheno[1,1])
-        @info "Removing row names of phenotype. "
-        pheno = pheno[:, 2:end]
-    end
 
     if transposed 
         return transpose(pheno) |> collect
