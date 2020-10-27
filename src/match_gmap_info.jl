@@ -32,7 +32,7 @@ function get_gmap_info(rqtl_file)
             error("no gmap file found.")
         end
     else
-        error("Rqtl file is not passed in as a .zip, need to handle this.")
+        error("Tried to find gmap in zip file or csv file. NON FOUND. ")
     end
     return gmap
 
