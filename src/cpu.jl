@@ -61,7 +61,7 @@ end
 
 
 ##################### Running CPU Function ###################
-function cpurun(a::AbstractArray{<:Real, 2}, b::AbstractArray{<:Real, 2}, n::Int, maxlod::Bool)
+function cpurun(a::AbstractArray{<:Real, 2}, b::AbstractArray{<:Real, 2}, n::Int, export_matrix::Bool)
     a_std = get_standardized_matrix(a);
     b_std = get_standardized_matrix(b);
     #step 2: calculate R, matrix of corelation coefficients
@@ -70,8 +70,9 @@ function cpurun(a::AbstractArray{<:Real, 2}, b::AbstractArray{<:Real, 2}, n::Int
     # lod = lod_score(n, r);
     lod = lod_score_multithread(n,r)
 
-    if maxlod 
-        println("exporting max lod")
+
+    if !export_matrix 
+        println("Calculating max lod")
         return find_max_idx_value(lod)
     else 
         println("exporting matrix.")

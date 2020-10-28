@@ -6,21 +6,19 @@ using LinearAlgebra
 using Base.Threads
 using ZipFile
 using CUDA
-# using CuArrays
-# using CUDAnative
-# using CUDAdrv
-# import CuArrays.CuArray
+
 
 #put all your source file here.
 include("data_io.jl")
+export get_geno_data, get_pheno_data, get_gmap_file
 include("util.jl")
 include("cpu.jl")
+export cpurun 
 include("gpu.jl")
 include("common_func.jl")
 include("match_gmap_info.jl")
+export  get_gmap_info, match_gmap
 # include("cli.jl")
 
-#put all your public functions (functions that you want user to use) here.
-export get_geno_data, get_pheno_data, cpurun, get_gmap_info, match_gmap #, gpurun
 
 end # module

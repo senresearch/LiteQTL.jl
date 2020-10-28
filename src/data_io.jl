@@ -12,13 +12,24 @@ end
 #     return convert(Array{datatype,2}, pheno)
 # end
 
+function try_string2num(num)
+    return tryparse(Float64,num) != nothing
+end
+
 
 function get_pheno_data(file, datatype; transposed=true)
 
-    #first column is individual ID such as : BXD1
-    pheno = readdlm(file, ','; skipstart=1)
+    #first column is individual ID such as : BXD1 , need to be removed. 
+    pheno = readdlm(file, ','; skipstart=1)[:, 2:end]
+
+    if pheno[1,end] == "f" || pheno[1,end] == "m"
+        @info "Removing sex column of phenotype. "
+        pheno = pheno[:, 1:end-1]
+        
+    end
+
     pheno = convert(Array{datatype,2}, pheno)
-    # pheno = convert2float.(pheno, datatype)
+
     if transposed 
         return transpose(pheno) |> collect
     else 
