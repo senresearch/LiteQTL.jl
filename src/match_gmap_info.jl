@@ -16,24 +16,8 @@ function extension(url::String)
     end
 end
 
-function get_gmap_info(rqtl_file)
-
-    # if passing in rqtl_file as a zip, extract gmap file.
-    if extension(rqtl_file) == ".zip"
-        dir = ZipFile.Reader(rqtl_file)
-        f = findfile(dir, "gmap.csv")
-        gmap = readdlm(f, ',')
-        close(dir)
-    # if passing in just gmap file.
-    elseif extension(rqtl_file) == ".csv"
-        if occursin("gmap.csv", rqtl_file)
-            gmap = readdlm(rqtl_file, ',')
-        else
-            error("no gmap file found.")
-        end
-    else
-        error("Tried to find gmap in zip file or csv file. NON FOUND. ")
-    end
+function get_gmap_info(gmap_file)
+    gmap = readdlm(gmap_file, ',', header=true)
     return gmap
 
 end
