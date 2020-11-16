@@ -10,7 +10,7 @@ using CUDA
 
 #put all your source file here.
 include("data_io.jl")
-export get_geno_data, get_pheno_data, get_gmap_file
+export get_geno_data, get_pheno_data
 include("util.jl")
 include("cpu.jl")
 export cpurun 
