@@ -1,4 +1,3 @@
-
 function get_geno_data(file, datatype)
 
     geno_prob = convert(Array{datatype,2},readdlm(file, ','; skipstart=1))

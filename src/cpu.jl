@@ -73,7 +73,8 @@ function cpurun(a::AbstractArray{<:Real, 2}, b::AbstractArray{<:Real, 2}, n::Int
 
     if !export_matrix 
         println("Calculating max lod")
-        return find_max_idx_value(lod)
+        # return find_max_idx_value(lod)
+	return findmax(lod, dims=1)
     else 
         println("exporting matrix.")
         return lod
