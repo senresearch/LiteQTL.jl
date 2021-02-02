@@ -34,6 +34,8 @@ julia> include("./example/spleen_analysis.jl")
 For more examples on how to use LMGPU, please take a look at this [example](https://github.com/senresearch/LMGPU.jl/blob/master/example/spleen_analysis.jl) file.
 
 ## Auxiliary Repositories:
-[LMGPU_Bin](https://github.com/senresearch/lmgpu_bin) compiles the LMGPU package to remove the compilation time of Julia (the extra time in the first run in Julia REPL). 
-[LMGPU G3 Supplement](https://github.com/senresearch/LMGPU-G3-supplement) is an effort to make our research reproducible. All code related to experiment reuslt, from dowloading data, cleaning data, to running LMGPU and creating figure are found in this repository. You can recreate the results in our paper [Speeding up eQTL scans in the BXD population using GPUs](https://www.biorxiv.org/content/10.1101/2020.06.22.153742v1.full.pdf) using the scripts in this repository. 
+- #### [LMGPU_Bin](https://github.com/senresearch/lmgpu_bin)    
+This repo contais scripts to compile the LMGPU package to remove the compilation time of Julia (the extra time in the first run in Julia REPL).   
+- #### [LMGPU G3 Supplement](https://github.com/senresearch/LMGPU-G3-supplement)  
+It is an effort to make our research reproducible. All code related to experiment reuslt, from dowloading data, cleaning data, to running LMGPU and creating figure are found in this repository. You can recreate the results in our paper [Speeding up eQTL scans in the BXD population using GPUs](https://www.biorxiv.org/content/10.1101/2020.06.22.153742v1.full.pdf) using the scripts in this repository. 
 
