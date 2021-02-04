@@ -4,7 +4,7 @@ using DelimitedFiles
 using LinearAlgebra
 
 URL=joinpath(@__DIR__, "..", "data", "HC_M2_0606_R.zip")
-output_dir=joinpath(@__DIR__, "..", "data","HIPPO_CLEAN_DATA")
+output_dir=joinpath(@__DIR__, "..", "data","SPLEEN_CLEAN_DATA")
 scan="FALSE"
 r_cleaning_script = joinpath(@__DIR__, "..", "r", "cleaning.R")
 

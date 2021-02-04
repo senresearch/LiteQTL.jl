@@ -12,7 +12,7 @@ function main()
     LMGPU.set_blas_threads(16);
     # Read in data.
     G = LMGPU.get_geno_data(geno_file, Float64)
-    Y = LMGPU.get_pheno_data(pheno_file, Float64)
+    Y = LMGPU.get_pheno_data(pheno_file, Float64, transposed=false)
     # getting geno and pheno file size.
     n = size(Y,1)
     m = size(Y,2)
