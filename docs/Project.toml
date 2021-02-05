@@ -1,5 +1,6 @@
 [deps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+LMGPU = "80ae3f88-c08a-44f8-80fe-4bd6150eb394"
 
 [compat]
-Documenter = "~0.26"
+Documenter = "~0.24"
