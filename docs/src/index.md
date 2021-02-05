@@ -1,4 +1,6 @@
-# LMGPU.jl
+# LMGPU.jl Documentation
+
+LMGPU is a package that does a QTL scan using Linear Model. 
 
 ```@index
 ```
@@ -6,3 +8,4 @@
 ```@autodocs
 Modules = [LMGPU]
 ```
+

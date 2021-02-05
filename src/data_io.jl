@@ -8,7 +8,12 @@ function try_string2num(num)
     return tryparse(Float64,num) != nothing
 end
 
+"""
+    get_pheno_data(file, datatype; transposed=true)
 
+returns the phenotype data. If transposed=true, then the data will be transposed. 
+
+"""
 function get_pheno_data(file, datatype; transposed=true)
 
     #first column is individual ID such as : BXD1 , need to be removed. 
