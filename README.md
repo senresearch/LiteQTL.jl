@@ -22,7 +22,7 @@ Chelsea Trotter, Hyeonju Kim, Gregory Farage, Pjotr Prins, Robert W. Williams, K
 This package is developed in Julia. To add LMGPU to your Julia installation:
 ```julia
 julia> using Pkg; 
-julia> Pkg.add(url="https://github.com/senresearch/LMGPU.jl")
+julia> Pkg.add(url="https://github.com/chelseatrotter/LMGPU.jl")
 ```
 To run the example provided by LMGPU:
 ```julia
