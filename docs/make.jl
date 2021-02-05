@@ -15,5 +15,5 @@ makedocs(;
 deploydocs(;
     repo="github.com/chelseatrotter/LMGPU.jl.git",
     devurl = "dev",
-    versions = ["stable" => "v^", "v#.#", devurl => devurl],
+    versions = ["stable" => "v^", "v#.#"],
 )
