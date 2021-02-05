@@ -1,8 +1,8 @@
 # LMGPU
 
-[![Build Status](https://travis-ci.com/senresearch/LMGPU.jl.svg?branch=master)](https://travis-ci.com/senresearch/LMGPU.jl)
-[![Codecov](https://codecov.io/gh/senresearch/LMGPU.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/senresearch/LMGPU.jl)
-[![Coveralls](https://coveralls.io/repos/github/senresearch/LMGPU.jl/badge.svg?branch=master)](https://coveralls.io/github/senresearch/LMGPU.jl?branch=master)
+[![Build Status](https://travis-ci.com/chelseatrotter/LMGPU.jl.svg?branch=master)](https://travis-ci.com/chelseatrotter/LMGPU.jl)
+[![Codecov](https://codecov.io/gh/chelseatrotter/LMGPU.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/chelseatrotter/LMGPU.jl)
+[![Coveralls](https://coveralls.io/repos/github/chelseatrotter/LMGPU.jl/badge.svg?branch=master)](https://coveralls.io/github/chelseatrotter/LMGPU.jl?branch=master)
 
 LMGPU is a package that runs whole genome QTL scans near real-time, utilizing the computation power of GPU. 
 
