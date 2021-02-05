@@ -1,7 +1,7 @@
 name = "LMGPU"
 uuid = "80ae3f88-c08a-44f8-80fe-4bd6150eb394"
 authors = ["Chelsea Trotter", "Sen Research"]
-version = "0.1.1"
+version = "0.1.2"
 
 [deps]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
