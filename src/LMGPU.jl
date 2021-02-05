@@ -6,6 +6,7 @@ using LinearAlgebra
 using Base.Threads
 using ZipFile
 using CUDA
+using CSV
 
 
 #put all your source file here.

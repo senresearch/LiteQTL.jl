@@ -74,7 +74,14 @@ function cpurun(a::AbstractArray{<:Real, 2}, b::AbstractArray{<:Real, 2}, n::Int
     if !export_matrix 
         println("Calculating max lod")
         # return find_max_idx_value(lod)
-	return findmax(lod, dims=1)
+        res = findmax(lod, dims=2)
+        # get the first element, which is the max of the first dimension, and turn it into a column
+        max = res[1]
+        # get the second element, which is the cartisian index, and only get the first index of the tuple(cartisian index), and turn it into column
+        maxidx = getindex.(res[2], 2)
+        return hcat(maxidx, max)
+
+	return 
     else 
         println("exporting matrix.")
         return lod
