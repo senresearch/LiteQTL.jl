@@ -1,7 +1,7 @@
 using Documenter, LMGPU
 
-const src = "https://github.com/chelseatrotter/LMGPU.jl"
-const dst = "https://chelseatrotter.github.io/LMGPU.jl/stable"
+const src = "https://github.com/ChelseaTrotter/LMGPU.jl"
+const dst = "https://ChelseaTrotter.github.io/LMGPU.jl/stable"
 
 function main()
     ci = get(ENV, "CI", "") == "true"
@@ -17,10 +17,10 @@ function main()
             prettyurls = ci,
             canonical = dst,
             # assets = ["assets/favicon.ico"],
-            # analytics = "UA-154489943-2",
+            analytics = "UA-154489943-2",
         ),
-        doctest = true,
-        #strict = true,
+        doctest = ("doctest=only" in ARGS) ? :only : true,
+        strict = !("strict=false" in ARGS),
         modules = [LMGPU],
         pages = Any[
             "Home" => "index.md",
@@ -59,7 +59,7 @@ function main()
     if ci
         @info "Deploying to GitHub"
         deploydocs(
-            repo = "github.com/chelseatrotter/LMGPU.jl.git",
+            repo = "github.com/ChelseaTrotter/LMGPU.jl.git",
             push_preview = true
         )
     end
