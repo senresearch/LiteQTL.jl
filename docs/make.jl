@@ -6,7 +6,7 @@ const dst = "https://ChelseaTrotter.github.io/LMGPU.jl/stable"
 function main()
     ci = get(ENV, "CI", "") == "true"
     @info "Generating Documenter.jl site"
-    DocMeta.setdocmeta!(CUDA, :DocTestSetup, :(using LMGPU); recursive=true)
+    DocMeta.setdocmeta!(LMGPU, :DocTestSetup, :(using LMGPU); recursive=true)
 
     makedocs(
         sitename = "LMGPU.jl",
