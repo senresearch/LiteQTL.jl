@@ -9,6 +9,7 @@ function main()
     DocMeta.setdocmeta!(LMGPU, :DocTestSetup, :(using LMGPU); recursive=true)
 
     makedocs(
+        # Must have the following args: 
         sitename = "LMGPU.jl",
         authors = "Chelsea Trotter, Saunak Sen",
         repo = "$src/blob/{commit}{path}#{line}",
@@ -16,55 +17,31 @@ function main()
             # Use clean URLs on CI
             prettyurls = ci,
             canonical = dst,
-            # assets = ["assets/favicon.ico"],
             analytics = "UA-154489943-2",
         ),
-        doctest = ("doctest=only" in ARGS) ? :only : true,
-        strict = !("strict=false" in ARGS),
         modules = [LMGPU],
         pages = Any[
             "Home" => "index.md",
-            # "Tutorials" => Any[
-            #     "tutorials/introduction.md",
-            # ],
-            # "Installation" => Any[
-            #     "installation/overview.md",
-            #     "installation/conditional.md",
-            #     "installation/troubleshooting.md",
-            # ],
-            # "Usage" => Any[
-            #     "usage/overview.md",
-            #     "usage/workflow.md",
-            #     "usage/array.md",
-            #     "usage/memory.md",
-            #     "usage/multigpu.md",
-            # ],
-            # "Development" => Any[
-            #     "development/profiling.md",
-            #     "development/troubleshooting.md",
-            # ],
-            # "API reference" => Any[
-            #     "api/essentials.md",
-            #     "api/compiler.md",
-            #     "api/kernel.md",
-            #     "api/array.md",
-            # ],
-            # "Library reference" => Any[
-            #     "lib/driver.md",
-            # ],
-            # "FAQ" => "faq.md",
-        ]
+        ],
+
+        # Additional, not must-haves. 
+        doctest = ("doctest=only" in ARGS) ? :only : true,
+        strict = !("strict=false" in ARGS),
     )
 
     if ci
         @info "Deploying to GitHub"
         deploydocs(
+            # Must have the following args: 
             repo = "github.com/ChelseaTrotter/LMGPU.jl.git",
+            devurl = "dev",
+            versions = ["stable" => "v^", "v#.#"],
             push_preview = true
         )
     end
 
 end
+
 isinteractive() || main()
 
 # makedocs(;
