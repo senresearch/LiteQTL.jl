@@ -1,8 +1,8 @@
-using LMGPU # always your module
+using LiteQTL # always your module
 using Test # and of course the test package.
 
 
-@testset "LMGPU.jl" begin
+@testset "LiteQTL.jl" begin
     # Write your own tests here.
     # include("download_data.jl")
     # run(`Rscript --vanilla clean_data.R`)

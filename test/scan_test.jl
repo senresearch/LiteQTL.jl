@@ -1,4 +1,4 @@
-using LMGPU
+using LiteQTL
 using Test
 using DelimitedFiles
 using CSV
@@ -12,8 +12,8 @@ datatype = Float64
 dataset = "spleen"
 export_matrix = false
 
-Y = LMGPU.get_pheno_data(pheno_file, datatype, transposed=false)
-G = LMGPU.get_geno_data(geno_file, datatype)
+Y = LiteQTL.get_pheno_data(pheno_file, datatype, transposed=false)
+G = LiteQTL.get_geno_data(geno_file, datatype)
 
 # Check if they have the same amount of individuals. 
 @test size(Y)[1] == size(G)[1]
@@ -24,10 +24,10 @@ p = size(G,2)
 
 println("******* Indivuduals n: $n, Traits m: $m, Markers p: $p ****************");
 
-lod = LMGPU.cpurun(Y, G,n,export_matrix);
+lod = LiteQTL.cpurun(Y, G,n,export_matrix);
 julia_max = lod
 
-julia_output_file = joinpath(Base.@__DIR__, "..", "data", "results", string(datatype) * dataset*"_lmgpu_output.csv")
+julia_output_file = joinpath(Base.@__DIR__, "..", "data", "results", string(datatype) * dataset*"_LiteQTL_output.csv")
 # writedlm(julia_output_file, lod, ',')
 
 # read in Rqtl scan result 

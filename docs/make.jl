@@ -1,16 +1,16 @@
-using Documenter, LMGPU
+using Documenter, LiteQTL
 
-const src = "https://github.com/ChelseaTrotter/LMGPU.jl"
-const dst = "https://ChelseaTrotter.github.io/LMGPU.jl/stable"
+const src = "https://github.com/senresearch/LiteQTL.jl"
+const dst = "https://senresearch.github.io/LiteQTL.jl/stable"
 
 function main()
     ci = get(ENV, "CI", "") == "true"
     @info "Generating Documenter.jl site"
-    DocMeta.setdocmeta!(LMGPU, :DocTestSetup, :(using LMGPU); recursive=true)
+    DocMeta.setdocmeta!(LiteQTL, :DocTestSetup, :(using LiteQTL); recursive=true)
 
     makedocs(
         # Must have the following args: 
-        sitename = "LMGPU.jl",
+        sitename = "LiteQTL.jl",
         authors = "Chelsea Trotter, Saunak Sen",
         repo = "$src/blob/{commit}{path}#{line}",
         format = Documenter.HTML(
@@ -19,7 +19,7 @@ function main()
             canonical = dst,
             analytics = "UA-154489943-2",
         ),
-        modules = [LMGPU],
+        modules = [LiteQTL],
         pages = Any[
             "Home" => "index.md",
         ],
@@ -33,7 +33,7 @@ function main()
         @info "Deploying to GitHub"
         deploydocs(
             # Must have the following args: 
-            repo = "github.com/ChelseaTrotter/LMGPU.jl.git",
+            repo = "github.com/senresearch/LiteQTL.jl.git",
             devurl = "dev",
             versions = ["stable" => "v^", "v#.#"],
             push_preview = true
@@ -45,19 +45,19 @@ end
 isinteractive() || main()
 
 # makedocs(;
-#     modules=[LMGPU],
+#     modules=[LiteQTL],
 #     format=Documenter.HTML(),
 #     pages=[
 #         "Home" => "index.md",
 #     ],
 #     repo="/blob/{commit}{path}#L{line}",
-#     sitename="LMGPU.jl",
+#     sitename="LiteQTL.jl",
 #     authors="Chelsea Trotter, Sen Research",
 #     assets=String[],
 # )
 
 # deploydocs(;
-#     repo="github.com/chelseatrotter/LMGPU.jl.git",
+#     repo="github.com/senresearch/LiteQTL.jl.git",
 #     devurl = "dev",
 #     versions = ["stable" => "v^", "v#.#"],
 # )

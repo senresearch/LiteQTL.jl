@@ -1,4 +1,4 @@
-using LMGPU
+using LiteQTL
 using Test
 using DelimitedFiles
 using LinearAlgebra

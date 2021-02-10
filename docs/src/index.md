@@ -1,11 +1,11 @@
-# LMGPU.jl Documentation
+# LiteQTL.jl Documentation
 
-LMGPU is a package that does a QTL scan using Linear Model. 
+LiteQTL is a package that does a QTL scan using Linear Model. 
 
 ```@index
 ```
 
 ```@autodocs
-Modules = [LMGPU]
+Modules = [LiteQTL]
 ```
 

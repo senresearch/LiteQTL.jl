@@ -1,4 +1,4 @@
-using LMGPU 
+using LiteQTL 
 using CSV 
 using DelimitedFiles
 using DataFrames
@@ -7,7 +7,7 @@ pheno_file = "/export/xiaoqihu/git/tensorqtl/example/cleanpheno.csv"
 geno_file = "/export/xiaoqihu/git/tensorqtl/example/cleangeno.csv"
 export_matrix = false
 
-@time pheno = LMGPU.get_pheno_data(pheno_file, Float64, transposed=true)
+@time pheno = LiteQTL.get_pheno_data(pheno_file, Float64, transposed=true)
 # 10.865656 seconds (47.21 M allocations: 1.625 GiB, 12.64% gc time)
 @time geno = CSV.read(geno_file)
 # 109.905806 seconds (41.48 M allocations: 46.943 GiB, 0.58% gc time)
@@ -37,7 +37,7 @@ genobychr = Nothing;
 geno = Nothing;
 chr1geno = Nothing;
 
-LMGPU.set_blas_threads(16);
+LiteQTL.set_blas_threads(16);
 
 G = genomat;
 Y = pheno;
@@ -50,5 +50,5 @@ m = size(Y,2)
 p = size(G,2)
 println("******* Indivuduals n: $n, Traits m: $m, Markers p: $p ****************");
 
-@time lodc = LMGPU.cpurun(Y, G,n,export_matrix);
-@time lodg = LMGPU.gpurun(Y, G,n)
+@time lodc = LiteQTL.cpurun(Y, G,n,export_matrix);
+@time lodg = LiteQTL.gpurun(Y, G,n)

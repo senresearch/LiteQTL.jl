@@ -1,4 +1,4 @@
-name = "LMGPU"
+name = "LiteQTL"
 uuid = "80ae3f88-c08a-44f8-80fe-4bd6150eb394"
 authors = ["Chelsea Trotter", "Sen Research"]
 version = "0.1.2"

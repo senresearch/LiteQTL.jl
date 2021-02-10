@@ -1,4 +1,4 @@
-using LMGPU
+using LiteQTL
 using DelimitedFiles
 
 function main()
@@ -9,10 +9,10 @@ function main()
     output_file = "output.csv"
     rqtl_file = joinpath(@__DIR__, "..", "data", "UTHSC_SPL_RMA_1210.zip")
 
-    LMGPU.set_blas_threads(16);
+    LiteQTL.set_blas_threads(16);
     # Read in data.
-    G = LMGPU.get_geno_data(geno_file, Float64)
-    Y = LMGPU.get_pheno_data(pheno_file, Float64, transposed=false)
+    G = LiteQTL.get_geno_data(geno_file, Float64)
+    Y = LiteQTL.get_pheno_data(pheno_file, Float64, transposed=false)
     # getting geno and pheno file size.
     n = size(Y,1)
     m = size(Y,2)
@@ -22,16 +22,16 @@ function main()
     # println("CPU timing: $(cpu_timing[3])")
 
     # running analysis.
-    @time lodc = LMGPU.cpurun(Y, G,n,export_matrix);
-    # lodg = LMGPU.gpurun(Y, G,n,m,p)
+    @time lodc = LiteQTL.cpurun(Y, G,n,export_matrix);
+    # lodg = LiteQTL.gpurun(Y, G,n,m,p)
 
     display(lodc[1:20, 1:2])
     # display(lodg[1:20, 1:2])
 
     # if !export_matrix
-    #     gmap = LMGPU.get_gmap_info(rqtl_file)
+    #     gmap = LiteQTL.get_gmap_info(rqtl_file)
     #     idx = trunc.(Int, lod[:,1])
-    #     gmap_info = LMGPU.match_gmap(idx, gmap)
+    #     gmap_info = LiteQTL.match_gmap(idx, gmap)
     #     lod = hcat(gmap_info, lod)
     #     header = reshape(["marker", "chr", "pos", "idx", "lod"], 1,:)
     #     lod = vcat(header, lod)
