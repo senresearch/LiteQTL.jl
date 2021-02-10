@@ -1,7 +1,7 @@
 # LiteQTL
 
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://senresearch.github.io/LiteQTL.jl/dev)
-[![Build Status](https://travis-ci.com/senresearch/LiteQTL.jl.svg?branch=master)](https://travis-ci.com/senresearch/LiteQTL.jl)
+[![Build Status](https://travis-ci.com/senresearch/LiteQTL.jl.svg?branch=master)](https://travis-ci.com/github/senresearch/LiteQTL.jl)
 [![Codecov](https://codecov.io/gh/senresearch/LiteQTL.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/senresearch/LiteQTL.jl)
 
 
