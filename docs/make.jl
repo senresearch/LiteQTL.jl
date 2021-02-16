@@ -22,6 +22,7 @@ function main()
         modules = [LiteQTL],
         pages = Any[
             "Home" => "index.md",
+            "Library" => "library.md"
         ],
 
         # Additional, not must-haves. 
