@@ -12,6 +12,18 @@ function get_pheno_block_size(n::Int, m::Int, p::Int, datatype::DataType)
     return (num_block, block_size)
 end
 
+"""
+$(SIGNATURES)
+
+# Arguments:
+- `Y` : a matrix of phenotypes
+- `G` : a matrix of genotypes
+- `n` : the number of individuals
+
+# Output: 
+returns the maximum LOD (Log of odds) score 
+
+"""
 function gpurun(Y::Array{<:Real,2}, G::Array{<:Real,2},n)
     m = size(Y,2)
     p = size(G,2)
