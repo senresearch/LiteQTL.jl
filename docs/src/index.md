@@ -21,7 +21,7 @@ LiteQTL is a package that runs whole genome QTL scans near real-time, utilizing 
 # Example
 See `example/spleen_analysis.ipynb`
 
-# Auxilary Github repo
+# Auxilary Github Repositories
 
 - [LiteQTL.jl Binary Compilation](https://github.com/senresearch/LiteQTL_bin)
 This repo contais scripts to compile the LiteQTL package to remove the compilation time of Julia (the extra time in the first run in Julia REPL).
