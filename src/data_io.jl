@@ -1,16 +1,22 @@
+
+"""
+$(SIGNATURES)
+returns the genotype data. Will skip every other column because genotype probability is duplicated. 
+
+
+"""
 function get_geno_data(file, datatype)
 
     geno_prob = convert(Array{datatype,2},readdlm(file, ','; skipstart=1))
     return geno_prob[:,1:2:end]
 end
 
-function try_string2num(num)
-    return tryparse(Float64,num) != nothing
-end
+# function try_string2num(num)
+#     return tryparse(Float64,num) != nothing
+# end
 
 """
-    get_pheno_data(file, datatype; transposed=true)
-
+$(SIGNATURES)
 returns the phenotype data. If transposed=true, then the data will be transposed. 
 
 """

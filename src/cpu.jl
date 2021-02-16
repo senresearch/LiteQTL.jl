@@ -26,6 +26,13 @@ function lod_score_multithread(m,r::AbstractArray{Float32,2})
     return r
 end
 
+"""
+$(SIGNATURES)
+
+returns the maximum LOD (Log of odds) score if `export_matrix` is false, or LOD score matrix otherwise.
+
+"""
+
 function cpurun_with_covar(Y::AbstractArray{<:Real,2}, G::AbstractArray{<:Real,2}, X::AbstractArray{<:Real,2}, n)
     px = calculate_px(X)
     # display(px)
@@ -42,48 +49,37 @@ end
 
 
 function find_max_idx_value(lod::AbstractArray{<:Real,2})
-    max_array = Array{typeof(lod[1,1]),2}(undef, size(lod)[1], 2)
-    # Threads.@threads for i in 1:size(lod)[1]
-        for i in 1:size(lod)[1]
-        temp = lod[i, 1]
-        idx = 1
-        for j in 2:size(lod)[2]
-            if temp < lod[i,j]
-                temp = lod[i,j]
-                idx = j
-            end
-        end
-        max_array[i,1] = idx
-        max_array[i,2] = temp
-    end
-    return max_array
+    res = findmax(lod, dims=2)
+    # get the first element, which is the max of the first dimension, and turn it into a column
+    max = res[1]
+    # get the second element, which is the cartisian index, and only get the first index of the tuple(cartisian index), and turn it into column
+    maxidx = getindex.(res[2], 2)
+    return hcat(maxidx, max)
 end
 
 
 ##################### Running CPU Function ###################
-function cpurun(a::AbstractArray{<:Real, 2}, b::AbstractArray{<:Real, 2}, n::Int, export_matrix::Bool)
-    a_std = get_standardized_matrix(a);
-    b_std = get_standardized_matrix(b);
+"""
+$(SIGNATURES)
+returns the maximum LOD (Log of odds) score if `export_matrix` is false, or LOD score matrix otherwise.
+
+"""
+function cpurun(Y::AbstractArray{<:Real, 2}, G::AbstractArray{<:Real, 2}, n::Int, export_matrix::Bool)
+    pheno_std = get_standardized_matrix(Y);
+    geno_std = get_standardized_matrix(G);
     #step 2: calculate R, matrix of corelation coefficients
-    r = calculate_r(a_std,b_std);
+    r = calculate_r(pheno_std,geno_std);
+    @info "Done calculating corelation coefficients."
     #step 3: calculate r square and lod score
     # lod = lod_score(n, r);
     lod = lod_score_multithread(n,r)
-
+    @info "Done calculating LOD. "
 
     if !export_matrix 
         println("Calculating max lod")
-        # return find_max_idx_value(lod)
-        res = findmax(lod, dims=2)
-        # get the first element, which is the max of the first dimension, and turn it into a column
-        max = res[1]
-        # get the second element, which is the cartisian index, and only get the first index of the tuple(cartisian index), and turn it into column
-        maxidx = getindex.(res[2], 2)
-        return hcat(maxidx, max)
-
-	return 
+        return find_max_idx_value(lod)
     else 
-        println("exporting matrix.")
+        println("Exporting matrix.")
         return lod
     end
 

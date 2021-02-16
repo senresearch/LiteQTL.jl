@@ -7,7 +7,7 @@ LiteQTL is a package that runs whole genome QTL scans near real-time, utilizing 
 - Near real time computation for whole genome scan using Linear Model
 - Genome scan with covairates
 - CPU parallelization and GPU acceleration
-- Input data can be of different precision (Float32, or Float64)
+- Input data can be of different precisions (Float32, or Float64)
 
 # Input and Output
 ### Input (all with no missing data)
@@ -19,9 +19,15 @@ LiteQTL is a package that runs whole genome QTL scans near real-time, utilizing 
 - LOD (Log of Odds) matrix
 
 # Example
-
+See `example/spleen_analysis.ipynb`
 
 # Auxilary Github repo
+
+- [LiteQTL.jl Binary Compilation](https://github.com/senresearch/LiteQTL_bin)
+This repo contais scripts to compile the LiteQTL package to remove the compilation time of Julia (the extra time in the first run in Julia REPL).
+
+- [LiteQTL.jl G3 Journal Supplemental Materials](https://github.com/senresearch/LiteQTL-G3-supplement)
+It is an effort to make our research reproducible. All code related to experiment reuslt, from dowloading data, cleaning data, to running LiteQTL and creating figure are found in this repository. You can recreate the results in our paper Speeding up eQTL scans in the BXD population using GPUs using the scripts in this repository.
 
 ```@index
 ```
