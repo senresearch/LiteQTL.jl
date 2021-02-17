@@ -34,6 +34,7 @@ $(SIGNATURES)
 - `G` : a matrix of genotypes
 - `X` : a matrix of covariates
 - `n` : the number of individuals
+- `export_matrix` : a boolean value that determines whether the result should be the maximum value of LOD score of each phenotype and its corresponding index, or the whole LOD score matrix. 
 
 # Output: 
 returns the maximum LOD (Log of odds) score if `export_matrix` is false, or LOD score matrix otherwise.
@@ -81,6 +82,7 @@ $(SIGNATURES)
 - `Y` : a matrix of phenotypes
 - `G` : a matrix of genotypes
 - `n` : the number of individuals
+- `export_matrix` : a boolean value that determines whether the result should be the maximum value of LOD score of each phenotype and its corresponding index, or the whole LOD score matrix. 
 
 # Output: 
 returns the maximum LOD (Log of odds) score if `export_matrix` is false, or LOD score matrix otherwise.
