@@ -12,6 +12,9 @@ By using easily parallelizable operations including matrix multiplication, vecto
 and element-wise operations, our method is about 300 times faster than a R/qtl linear model genome scan
 using 16 threads.
 
+[Documentation](https://senresearch.github.io/LiteQTL.jl/dev/)
+
+
 ## Paper: 
 To find out more about methods used and also acceleration techniques, please refer to our paper on Biorxiv: 
 
@@ -22,7 +25,7 @@ Chelsea Trotter, Hyeonju Kim, Gregory Farage, Pjotr Prins, Robert W. Williams, K
 This package is developed in Julia. To add LiteQTL to your Julia installation:
 ```julia
 julia> using Pkg; 
-julia> Pkg.add(url="https://github.com/senresearch/LiteQTL.jl")
+julia> Pkg.add("LiteQTL")
 ```
 To run the example provided by LiteQTL:
 ```julia
