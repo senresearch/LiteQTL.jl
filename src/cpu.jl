@@ -40,8 +40,7 @@ $(SIGNATURES)
 returns the maximum LOD (Log of odds) score if `export_matrix` is false, or LOD score matrix otherwise.
 
 """
-
-function cpurun_with_covar(Y::AbstractArray{<:Real,2}, G::AbstractArray{<:Real,2}, X::AbstractArray{<:Real,2}, n::Int, export_matrix::Bool)
+function cpurun(Y::AbstractArray{<:Real,2}, G::AbstractArray{<:Real,2}, X::AbstractArray{<:Real,2}, n::Int, export_matrix::Bool)
     @info "Running genome scan with covariates..."
     px = calculate_px(X)
     # display(px)

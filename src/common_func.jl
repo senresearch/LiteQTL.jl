@@ -19,10 +19,26 @@ function get_standardized_matrix(m::AbstractArray{<:Real,2})
     return m
 end
 
+# function new_std_matrix(m::AbstractArray{<:Real,2})
+#     rownum = size(m)[1]
+#     summ = sum(m, dims=1)
+#     means = summ ./ rownum 
+#     sums = zeros(size(m[2]))
+#     for col in 1:size(m)[2]
+#         sumscol = @. (m[:,col] - means)^2
+#         sums[col] = sum(sumscol)
+#     end
+    
+#     std = @. sqrt(sums / rownum)
+#     for col in 1:size(m)[2] 
+#         m[:,col] = @. (m[:,col] - means )/std
+#     end
+#     return m 
+# end
 
 function calculate_px(x::AbstractArray{<:Real,2})
     XtX = transpose(x)*x
-    result = X*inv(XtX)*transpose(x)
+    result = x*inv(XtX)*transpose(x)
     # display(result)
     return result
 end
