@@ -27,7 +27,7 @@ See `example/spleen_analysis.ipynb`
 This repo contais scripts to compile the LiteQTL package to remove the compilation time of Julia (the extra time in the first run in Julia REPL).
 
 - [LiteQTL.jl G3 Journal Supplemental Materials](https://github.com/senresearch/LiteQTL-G3-supplement)
-It is an effort to make our research reproducible. All code related to experiment reuslt, from dowloading data, cleaning data, to running LiteQTL and creating figure are found in this repository. You can recreate the results in our paper Speeding up eQTL scans in the BXD population using GPUs using the scripts in this repository.
+It is an effort to make our research reproducible. All code related to experiment reuslt, from dowloading data, cleaning data, to running LiteQTL and creating figure are found in this repository. You can recreate the results in our paper [Speeding up eQTL scans in the BXD population using GPUs](https://www.biorxiv.org/content/10.1101/2020.06.22.153742v1) using the scripts in this repository.
 
 
 
