@@ -1,7 +1,7 @@
 """
 $(SIGNATURES)
 
-This function will run genome scan without covariates. To run scan with covariates, see [`scan(Y::AbstractArray{<:Real, 2}, G::AbstractArray{<:Real, 2},  X::AbstractArray{<:Real, 2}, n::Int; export_matrix::Bool=false, usegpu::Bool=false`)](@ref)
+This function will run genome scan without covariates.
 
 # Arguments:
 - `Y` : a matrix of phenotypes
