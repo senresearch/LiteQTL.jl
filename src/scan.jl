@@ -44,5 +44,4 @@ function scan(Y::AbstractArray{<:Real, 2}, G::AbstractArray{<:Real, 2},  X::Abst
 
     return LiteQTL.cpurun(Y,G,X,n,export_matrix)
 
-
 end
