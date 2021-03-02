@@ -17,14 +17,14 @@ function main()
     m = size(Y,2)
     p = size(G,2)
     println("******* Indivuduals n: $n, Traits m: $m, Markers p: $p ****************");
-    # cpu_timing = benchmark(5, cpurun, Y, G,n,export_matrix);
+    # cpu_timing = benchmark(5, scan, Y, G, n; export_matrix);
     # println("CPU timing: $(cpu_timing[3])")
 
     # running analysis.
-    @time lodc = LiteQTL.cpurun(Y, G,n,export_matrix);
-    # lodg = LiteQTL.gpurun(Y, G,n,m,p)
+    @time lodc = LiteQTL.scan(Y, G, n; export_matrix);
+    # lodg = LiteQTL.scan(Y, G, n; usegpu=true)
 
-    display(lodc[1:20, 1:2])
+    # display(lodc[1:20, 1:2])
     # display(lodg[1:20, 1:2])
 
     # if !export_matrix

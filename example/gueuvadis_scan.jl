@@ -50,5 +50,5 @@ m = size(Y,2)
 p = size(G,2)
 println("******* Indivuduals n: $n, Traits m: $m, Markers p: $p ****************");
 
-@time lodc = LiteQTL.cpurun(Y, G,n,export_matrix);
-@time lodg = LiteQTL.gpurun(Y, G,n)
+@time lodc = LiteQTL.scan(Y, G,n;export_matrix);
+@time lodg = LiteQTL.scan(Y, G,n;usegpu=true)
