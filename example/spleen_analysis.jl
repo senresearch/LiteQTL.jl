@@ -10,8 +10,8 @@ function main()
 
     LiteQTL.set_blas_threads(16);
     # Read in data.
-    G = LiteQTL.get_geno_data(geno_file, Float64)
-    Y = LiteQTL.get_pheno_data(pheno_file, Float64, transposed=false)
+    G = get_geno_data(geno_file, Float64)
+    Y = get_pheno_data(pheno_file, Float64, transposed=false)
     # getting geno and pheno file size.
     n = size(Y,1)
     m = size(Y,2)
@@ -21,16 +21,16 @@ function main()
     # println("CPU timing: $(cpu_timing[3])")
 
     # running analysis.
-    @time lodc = LiteQTL.scan(Y, G, n; export_matrix);
-    # lodg = LiteQTL.scan(Y, G, n; usegpu=true)
+    @time lodc = scan(Y, G, n; export_matrix);
+    # lodg = scan(Y, G, n; usegpu=true)
 
     # display(lodc[1:20, 1:2])
     # display(lodg[1:20, 1:2])
 
     # if !export_matrix
-    #     gmap = LiteQTL.get_gmap_info(rqtl_file)
+    #     gmap = get_gmap_info(rqtl_file)
     #     idx = trunc.(Int, lod[:,1])
-    #     gmap_info = LiteQTL.match_gmap(idx, gmap)
+    #     gmap_info = match_gmap(idx, gmap)
     #     lod = hcat(gmap_info, lod)
     #     header = reshape(["marker", "chr", "pos", "idx", "lod"], 1,:)
     #     lod = vcat(header, lod)
