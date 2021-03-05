@@ -1,4 +1,4 @@
-using Documenter, LiteQTL
+using Documenter, LiteQTL, DocStringExtensions
 
 const src = "https://github.com/senresearch/LiteQTL.jl"
 const dst = "https://senresearch.github.io/LiteQTL.jl/stable"

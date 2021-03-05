@@ -6,7 +6,7 @@ using LinearAlgebra
 using Base.Threads
 using CUDA
 using CSV
-using DocStringExtensions
+
 
 
 #put all your source file here.
