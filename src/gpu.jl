@@ -1,4 +1,3 @@
-
 function calculate_r(a::CuArray,b::CuArray)
     return CUDA.CUBLAS.gemm('T', 'N', a,b);
 end
@@ -28,11 +27,11 @@ function gpurun(Y::Array{<:Real,2}, G::Array{<:Real,2},n)
     m = size(Y,2)
     p = size(G,2)
     (num_block, block_size) = get_pheno_block_size(n,m,p, typeof(Y[1,1]))
-    # println("seperated into $num_block blocks, containing $block_size individual per block. ")
+    println("seperated into $num_block blocks, containing $block_size individual per block. ")
 
-    g_std = get_standardized_matrix(G);
+    g_std = get_standardized_matrix(G); # 3.39 seconds
     lod = convert(Array{typeof(Y[1,1]), 2},zeros(0,2))
-    d_g = CuArray(g_std);
+    d_g = CuArray(g_std); #0.3 seconds
     for i = 1:num_block
         # i = 1
         begining = block_size * (i-1) +1
@@ -62,13 +61,21 @@ function gpurun(Y::Array{<:Real,2}, G::Array{<:Real,2}, X::Array{<:Real,2}, n)
     m = size(Y,2)
     p = size(G,2)
     (num_block, block_size) = get_pheno_block_size(n,m,p, typeof(Y[1,1]))
-    # println("seperated into $num_block blocks, containing $block_size individual per block. ")
+    println("seperated into $num_block blocks, containing $block_size individual per block. ")
 
-    g_std = get_standardized_matrix(G);
+    # Output array:
     lod = convert(Array{typeof(Y[1,1]), 2},zeros(0,2))
-    d_g = CuArray(g_std);
-
+    # Transfer Genotype array to GPU
+    d_g = CuArray(G);
+    # Calculate px matrix for covar (X) on GPU
     d_px = CuArray(calculate_px(X))
+    # Calculate g hat on GPU
+    d_g_hat = CUDA.CUBLAS.gemm('N', 'N', d_px, d_g)
+    # Calculate tilda on GPU
+    d_g_tilda = d_g .- d_g_hat 
+    # Standardizing matrix on GPU
+    d_g_std = get_standardized_matrix(d_g_tilda)
+
     for i = 1:num_block
         # i = 1
         begining = block_size * (i-1) +1
@@ -79,10 +86,19 @@ function gpurun(Y::Array{<:Real,2}, G::Array{<:Real,2}, X::Array{<:Real,2}, n)
         # println("processing $begining to $ending...")
 
         y_block = Y[:, begining : ending]
-        y_std = get_standardized_matrix(y_block);
+        # Transfer phenotype array to GPU
+        d_y = CuArray(y_block)
+        # Calulate y hat on GPU 
+        d_y_hat = CUDA.CUBLAS.gemm('N', 'N', d_px, d_y)
+        # Calculate y tilda on GPU
+        d_y_tilda = d_y .- d_y_hat
+        d_y_std = get_standardized_matrix(d_y_tilda)
 
-        d_y = CuArray(y_std);
-        d_r = calculate_r(d_y,d_g);
+
+        # y_std = get_standardized_matrix(y_block);
+
+        # d_y = CuArray(y_std);
+        d_r = calculate_r(d_y_std,d_g_std);
         actual_block_size = ending - begining + 1 #it is only different from block size at the last loop since we are calculating the left over block not a whole block.
         gpu_square_lod(d_r,n,actual_block_size,p)
 
