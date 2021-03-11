@@ -9,7 +9,14 @@ function julia_std(a)
     return a 
 end 
 
+# Works
+function new_std(a)
+    return a = (a .- mean(a)) ./ std(a)
+end
 
+function gpu_std(a::CuArray)
+    
+end
 function get_standardized_matrix(m::AbstractArray{<:Real,2})
     Threads.@threads for col in 1:size(m)[2]
         summ = 0.0f0
