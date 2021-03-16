@@ -54,3 +54,48 @@ CUDA.@elapsed j_std = julia_std(d_a)
 # 0.18 seconds CPU 400%
 @time j_std = julia_std(a)
 # 1.0 seconds CPU 100%
+
+function testfloop!(n, r)
+
+    @floop for (j, i) in zip(1:size(r)[2], 1:size(r)[1])
+        tmpr = r[i,j]
+        @reduce( r[i,j] = (-n/2.0) * log10(1.0- ((tmpr/n)^2)) )
+    end
+    return r
+end
+
+function floop_map!(f, n, inputs, ex = ThreadedEx())
+    @floop ex for i in eachindex(inputs)
+        @inbounds inputs[i] = f(n,inputs[i])
+    end
+    return inputs
+end
+
+function updater(n,r)
+    return (-n/2.0) * log10(1.0- ((r/n)^2))
+end
+
+
+function test(n, r::AbstractArray{Float32, 2})
+    myi = 0 
+    myj = 0
+    try
+        Threads.@threads for j in 1:size(r)[2]
+            for i in 1:size(r)[1]
+                myi = i
+                myj = j 
+                r_square = (r[i,j]/n)^2
+                tmp = (-n/2.0) * log10(1.0-r_square)
+                r[i,j] = tmp
+            end
+        end
+    catch 
+        println("Myi: $myi, Myj: $myj")
+    end
+    return r
+end
+
+
+function testshort(n, r)
+    @. r = (-n/2.0) * log10(1.0- (r/n)^2)
+end
