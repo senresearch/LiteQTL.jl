@@ -1,4 +1,4 @@
-function std_mat(m)
+function get_standardized_matrix_gpu(m::AbstractArray{<:Real,2})
     return (m .- mean(m, dims=1)) ./ std(m, corrected=false, dims=1) 
 end
 
@@ -18,8 +18,6 @@ function get_standardized_matrix(m::AbstractArray{<:Real,2})
         for row in 1:rows
             m[row,col] = (m[row,col]-mean)/std
         end
-        println(mean)
-        println(std)
     end
     return m
 end
