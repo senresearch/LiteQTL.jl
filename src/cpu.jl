@@ -59,19 +59,34 @@ function cpurun(Y::AbstractArray{<:Real,2}, G::AbstractArray{<:Real,2}, X::Abstr
         println("Exporting matrix.")
         return lod
     end
-
 end
 
+# function find_max_idx_value(lod::AbstractArray{<:Real,2})
+#     res = findmax(lod, dims=2)
+#     # get the first element, which is the max of the first dimension, and turn it into a column
+#     max = res[1]
+#     # get the second element, which is the cartisian index, and only get the first index of the tuple(cartisian index), and turn it into column
+#     maxidx = getindex.(res[2], 2)
+#     return hcat(maxidx, max)
+# end
 
 function find_max_idx_value(lod::AbstractArray{<:Real,2})
-    res = findmax(lod, dims=2)
-    # get the first element, which is the max of the first dimension, and turn it into a column
-    max = res[1]
-    # get the second element, which is the cartisian index, and only get the first index of the tuple(cartisian index), and turn it into column
-    maxidx = getindex.(res[2], 2)
-    return hcat(maxidx, max)
+    max_array = Array{typeof(lod[1,1]),2}(undef, size(lod)[1], 2)
+    Threads.@threads for i in 1:size(lod)[1]
+        # for i in 1:size(lod)[1]
+        temp = lod[i, 1]
+        idx = 1
+        for j in 2:size(lod)[2]
+            if temp < lod[i,j]
+                temp = lod[i,j]
+                idx = j
+            end
+        end
+        max_array[i,1] = idx
+        max_array[i,2] = temp
+    end
+    return max_array
 end
-
 
 ##################### Running CPU Function ###################
 """
