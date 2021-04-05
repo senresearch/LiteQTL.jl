@@ -49,3 +49,17 @@ function convert2float(a, datatype)
     end
 end
 
+
+function filter_maf(genotype::Array{Float32, 2})
+    alleles = 2
+    maf_threshold = Float32(0.05)
+    
+    af = sum(genotype, dims=2) ./ (alleles * size(genotype, 2))
+    maf = replace(x -> x > 0.5 ? 1-x : x, af)
+
+    if maf_threshold > 0 
+        mask = getindex.(findall(maf .>= maf_threshold), 1)
+        genotype = genotype[mask, :]
+    end
+    return genotype
+end

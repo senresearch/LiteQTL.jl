@@ -13,12 +13,12 @@ This function will run genome scan without covariates.
 # Output: 
 calls `cpurun` function if `usegpu=false`, otherwise, calls `gpurun`
 """
-function scan(Y::AbstractArray{<:Real, 2}, G::AbstractArray{<:Real, 2}, n::Int; export_matrix::Bool=false, usegpu::Bool=false)
+function scan(Y::AbstractArray{<:Real, 2}, G::AbstractArray{<:Real, 2}, n::Int; export_matrix::Bool=false, usegpu::Bool=false, desiredoutput::String="lod")
     if usegpu
         return LiteQTL.gpurun(Y, G, n)
     end
 
-    return LiteQTL.cpurun(Y,G,n,export_matrix)
+    return LiteQTL.cpurun(Y,G,n,export_matrix,desiredoutput)
 end
 
 """
@@ -37,11 +37,11 @@ This scan function will run
 # Output: 
 returns the maximum LOD (Log of odds) score if `export_matrix` is false, or LOD score matrix otherwise.
 """
-function scan(Y::AbstractArray{<:Real, 2}, G::AbstractArray{<:Real, 2},  X::AbstractArray{<:Real, 2}, n::Int; export_matrix::Bool=false, usegpu::Bool=false)
+function scan(Y::AbstractArray{<:Real, 2}, G::AbstractArray{<:Real, 2},  X::AbstractArray{<:Real, 2}, n::Int; export_matrix::Bool=false, usegpu::Bool=false, desiredoutput::String="lod")
     if usegpu
         return LiteQTL.gpurun(Y, G, X, n)
     end
 
-    return LiteQTL.cpurun(Y,G,X,n,export_matrix)
+    return LiteQTL.cpurun(Y,G,X,n,export_matrix, desiredoutput)
 
 end
