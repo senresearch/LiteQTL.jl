@@ -2,6 +2,20 @@ function calculate_r(a::AbstractArray{<:Real,2},b::AbstractArray{<:Real, 2})
     return LinearAlgebra.BLAS.gemm('T', 'N', a,b);
 end
 
+function is_corr_in_range(r, min, max)
+    function inRange(n, min, max)
+        if n >= min && n <= max
+            return true
+        else
+            return false
+        end
+    end
+
+    if sum( inRange.(r, min,max) ) < prod(size(r))
+        error("Correlation matrix is not in range($min, $max). Check your r matrix again. ")
+    end
+
+end
 function lod_score_multithread(m,r::AbstractArray{Float64, 2})
     n = m 
     Threads.@threads for j in 1:size(r)[2]
@@ -26,6 +40,10 @@ function lod_score_multithread(m,r::AbstractArray{Float32,2})
     return r
 end
 
+function lod2p(lod)
+    return 1-cdf(Chisq(1),2*log(10)*lod)
+end
+
 """
 $(SIGNATURES)
 
@@ -40,7 +58,7 @@ $(SIGNATURES)
 returns the maximum LOD (Log of odds) score if `export_matrix` is false, or LOD score matrix otherwise.
 
 """
-function cpurun(Y::AbstractArray{<:Real,2}, G::AbstractArray{<:Real,2}, X::AbstractArray{<:Real,2}, n::Int, export_matrix::Bool)
+function cpurun(Y::AbstractArray{<:Real,2}, G::AbstractArray{<:Real,2}, X::AbstractArray{<:Real,2}, n::Int, export_matrix::Bool,desiredoutput::String, debug::Bool=true)
     @info "Running genome scan with covariates..."
     px = calculate_px(X)
     # display(px)
@@ -48,17 +66,32 @@ function cpurun(Y::AbstractArray{<:Real,2}, G::AbstractArray{<:Real,2}, X::Abstr
     g_hat = LinearAlgebra.BLAS.gemm('N', 'N', px, G)
     y_tilda = Y .- y_hat
     g_tilda = G .- g_hat
-    y_std = get_standardized_matrix(y_tilda)
+    y_std = get_standardized_matrix(y_tilda) 
     g_std = get_standardized_matrix(g_tilda)
     r = calculate_r(y_std, g_std)
-    lod = lod_score_multithread(n, r)
-    if !export_matrix 
-        println("Calculating max lod")
-        return find_max_idx_value(lod)
-    else 
-        println("Exporting matrix.")
-        return lod
+    if debug
+        is_corr_in_range(r, -1,1)
     end
+    if desiredoutput == "lod"
+        lod = lod_score_multithread(n, r)
+        if !export_matrix 
+            println("Calculating max lod")
+            return find_max_idx_value(lod)
+        else 
+            println("Exporting matrix.")
+            return lod
+        end
+    elseif desiredoutput == "pval"
+        return pval_calc(r, n-2)
+    else
+        error("Must specify `desiredoutput`, choose between `lod`, or `pval`")
+    end
+end
+
+function pval_calc(corr, dof)
+    t = corr .* sqrt.(dof ./ (1 .- corr .^2))
+    pval = 2 .* cdf(TDist(dof), .-abs.(t))
+    return pval
 end
 
 # function find_max_idx_value(lod::AbstractArray{<:Real,2})
@@ -102,25 +135,33 @@ $(SIGNATURES)
 returns the maximum LOD (Log of odds) score if `export_matrix` is false, or LOD score matrix otherwise.
 
 """
-function cpurun(Y::AbstractArray{<:Real, 2}, G::AbstractArray{<:Real, 2}, n::Int, export_matrix::Bool)
+function cpurun(Y::AbstractArray{<:Real, 2}, G::AbstractArray{<:Real, 2}, n::Int, export_matrix::Bool, desiredoutput::String, debug::Bool=true)
     @info "Running genome scan..."
     pheno_std = get_standardized_matrix(Y);
     geno_std = get_standardized_matrix(G);
     #step 2: calculate R, matrix of corelation coefficients
     r = calculate_r(pheno_std,geno_std);
+    if debug
+        is_corr_in_range(r, -1,1)
+    end
     @info "Done calculating corelation coefficients."
     #step 3: calculate r square and lod score
     # lod = lod_score(n, r);
-    lod = lod_score_multithread(n,r)
-    @info "Done calculating LOD. "
+    if desiredoutput == "lod"
+        lod = lod_score_multithread(n,r)
+        @info "Done calculating LOD. "
 
-    if !export_matrix 
-        println("Calculating max lod")
-        return find_max_idx_value(lod)
+        if !export_matrix 
+            println("Calculating max lod")
+            return find_max_idx_value(lod)
+        else 
+            println("Exporting matrix.")
+            return lod
+        end
+    elseif desiredoutput == "pval"
+        return pval_calc(r, n-2)
     else 
-        println("Exporting matrix.")
-        return lod
+        error("Must specify `desiredoutput`, choose between `lod`, or `pval`")
     end
-
 
 end

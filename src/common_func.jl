@@ -1,8 +1,10 @@
+
 function get_standardized_matrix_gpu(m::AbstractArray{<:Real,2})
     return (m .- mean(m, dims=1)) ./ std(m, corrected=false, dims=1) 
 end
 
-function get_standardized_matrix(m::AbstractArray{<:Real,2})
+function get_standardized_matrix(mat::AbstractArray{<:Real,2})
+    m = mat
     Threads.@threads for col in 1:size(m)[2]
         summ = 0.0f0
         rows = size(m)[1]
