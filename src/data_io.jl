@@ -50,16 +50,18 @@ function convert2float(a, datatype)
 end
 
 
-function filter_maf(genotype::Array{Float32, 2})
+function filter_maf(genotype::AbstractArray{<:Real, 2}; maf_threshold=0.05)
     alleles = 2
-    maf_threshold = Float32(0.05)
     
-    af = sum(genotype, dims=2) ./ (alleles * size(genotype, 2))
+    af = sum(genotype, dims=1) ./ (alleles * size(genotype, 1))
     maf = replace(x -> x > 0.5 ? 1-x : x, af)
 
     if maf_threshold > 0 
-        mask = getindex.(findall(maf .>= maf_threshold), 1)
-        genotype = genotype[mask, :]
+        mask = vec(maf .>= maf_threshold)
+        if size(mask,1) != size(genotype, 2)
+            error("Mask dimention does not match original matrix. Mask size: $(size(mask)), Matrix size: $(size(genotype))")
+        end
+        genotype = genotype[:, mask]
     end
     return genotype
 end

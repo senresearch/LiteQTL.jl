@@ -44,6 +44,12 @@ function lod2p(lod)
     return 1-cdf(Chisq(1),2*log(10)*lod)
 end
 
+function pval_calc(corr, dof)
+    t = corr .* sqrt.(dof ./ (1 .- corr .^2))
+    pval = 2 .* cdf(TDist(dof), .-abs.(t))
+    return pval
+end
+
 """
 $(SIGNATURES)
 
