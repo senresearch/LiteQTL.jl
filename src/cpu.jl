@@ -64,7 +64,7 @@ $(SIGNATURES)
 returns the maximum LOD (Log of odds) score if `export_matrix` is false, or LOD score matrix otherwise.
 
 """
-function cpurun(Y::AbstractArray{<:Real,2}, G::AbstractArray{<:Real,2}, X::AbstractArray{<:Real,2}, n::Int, export_matrix::Bool,desiredoutput::String, debug::Bool=true)
+function cpurun(Y::AbstractArray{<:Real,2}, G::AbstractArray{<:Real,2}, X::AbstractArray{<:Real,2}, n::Int, export_matrix::Bool,lod_or_pval::String, debug::Bool=true)
     @info "Running genome scan with covariates..."
     px = calculate_px(X)
     # display(px)
@@ -78,7 +78,7 @@ function cpurun(Y::AbstractArray{<:Real,2}, G::AbstractArray{<:Real,2}, X::Abstr
     if debug
         is_corr_in_range(r, -1,1)
     end
-    if desiredoutput == "lod"
+    if lod_or_pval == "lod"
         lod = lod_score_multithread(n, r)
         if !export_matrix 
             println("Calculating max lod")
@@ -87,10 +87,10 @@ function cpurun(Y::AbstractArray{<:Real,2}, G::AbstractArray{<:Real,2}, X::Abstr
             println("Exporting matrix.")
             return lod
         end
-    elseif desiredoutput == "pval"
+    elseif lod_or_pval == "pval"
         return pval_calc(r, n-2)
     else
-        error("Must specify `desiredoutput`, choose between `lod`, or `pval`")
+        error("Must specify `lod_or_pval`, choose between `lod`, or `pval`")
     end
 end
 
@@ -141,7 +141,7 @@ $(SIGNATURES)
 returns the maximum LOD (Log of odds) score if `export_matrix` is false, or LOD score matrix otherwise.
 
 """
-function cpurun(Y::AbstractArray{<:Real, 2}, G::AbstractArray{<:Real, 2}, n::Int, export_matrix::Bool, desiredoutput::String, debug::Bool=true)
+function cpurun(Y::AbstractArray{<:Real, 2}, G::AbstractArray{<:Real, 2}, n::Int, export_matrix::Bool, lod_or_pval::String, debug::Bool=true)
     @info "Running genome scan..."
     pheno_std = get_standardized_matrix(Y);
     geno_std = get_standardized_matrix(G);
@@ -152,7 +152,7 @@ function cpurun(Y::AbstractArray{<:Real, 2}, G::AbstractArray{<:Real, 2}, n::Int
     end
     @info "Done calculating corelation coefficients."
     #step 3: calculate r square and lod score
-    if desiredoutput == "lod"
+    if lod_or_pval == "lod"
         lod = lod_score_multithread(n,r)
         @info "Done calculating LOD. "
 
@@ -163,10 +163,10 @@ function cpurun(Y::AbstractArray{<:Real, 2}, G::AbstractArray{<:Real, 2}, n::Int
             println("Exporting matrix.")
             return lod
         end
-    elseif desiredoutput == "pval"
+    elseif lod_or_pval == "pval"
         return pval_calc(r, n-2)
     else 
-        error("Must specify `desiredoutput`, choose between `lod`, or `pval`")
+        error("Must specify `lod_or_pval`, choose between `lod`, or `pval`")
     end
 
 end
