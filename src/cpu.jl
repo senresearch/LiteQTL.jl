@@ -1,5 +1,5 @@
 function calculate_r(a::AbstractArray{<:Real,2},b::AbstractArray{<:Real, 2})
-    return LinearAlgebra.BLAS.gemm('T', 'N', a,b);
+    return LinearAlgebra.BLAS.gemm('T', 'N', a,b) ./ size(a, 1);
 end
 
 function is_corr_in_range(r, min, max)
@@ -20,7 +20,7 @@ function lod_score_multithread(m,r::AbstractArray{Float64, 2})
     n = m 
     Threads.@threads for j in 1:size(r)[2]
         for i in 1:size(r)[1]
-            r_square = (r[i,j]/n)^2
+            r_square = (r[i,j])^2
             tmp = (-n/2.0) * log10(1.0-r_square)
             r[i,j] = tmp
         end
@@ -32,7 +32,7 @@ function lod_score_multithread(m,r::AbstractArray{Float32,2})
     n = m 
     Threads.@threads for j in 1:size(r)[2]
         for i in 1:size(r)[1]
-            r_square = (r[i,j]/n)^2
+            r_square = (r[i,j])^2
             tmp = (-n/2.0f0) * log10(1.0f0-r_square)
             r[i,j] = tmp
         end
@@ -88,11 +88,11 @@ function cpurun(Y::AbstractArray{<:Real,2}, G::AbstractArray{<:Real,2}, X::Abstr
     end
 end
 
-function pval_calc(corr, dof)
-    t = corr .* sqrt.(dof ./ (1 .- corr .^2))
-    pval = 2 .* cdf(TDist(dof), .-abs.(t))
-    return pval
-end
+# function pval_calc(corr, dof)
+#     t = corr .* sqrt.(dof ./ (1 .- corr .^2))
+#     pval = 2 .* cdf(TDist(dof), .-abs.(t))
+#     return pval
+# end
 
 # function find_max_idx_value(lod::AbstractArray{<:Real,2})
 #     res = findmax(lod, dims=2)
@@ -146,7 +146,6 @@ function cpurun(Y::AbstractArray{<:Real, 2}, G::AbstractArray{<:Real, 2}, n::Int
     end
     @info "Done calculating corelation coefficients."
     #step 3: calculate r square and lod score
-    # lod = lod_score(n, r);
     if desiredoutput == "lod"
         lod = lod_score_multithread(n,r)
         @info "Done calculating LOD. "
