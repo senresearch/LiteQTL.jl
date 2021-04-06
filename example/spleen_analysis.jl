@@ -21,7 +21,7 @@ function main()
     # println("CPU timing: $(cpu_timing[3])")
 
     # running analysis.
-    @time lodc = scan(Y, G, n; export_matrix);
+    @time lodc = scan(Y, G, n; export_matrix, "lod", false);
     # lodg = scan(Y, G, n; usegpu=true)
 
     # display(lodc[1:20, 1:2])
