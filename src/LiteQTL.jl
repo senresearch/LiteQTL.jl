@@ -8,6 +8,7 @@ using CUDA
 using CSV
 using DocStringExtensions
 using Statistics
+using Distributions
 
 
 #put all your source file here.

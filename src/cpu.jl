@@ -1,5 +1,5 @@
-function calculate_r(a::AbstractArray{<:Real,2},b::AbstractArray{<:Real, 2})
-    return LinearAlgebra.BLAS.gemm('T', 'N', a,b) ./ size(a, 1);
+function calculate_nr(a::AbstractArray{<:Real,2},b::AbstractArray{<:Real, 2})
+    return LinearAlgebra.BLAS.gemm('T', 'N', a,b);
 end
 
 function is_corr_in_range(r, min, max)
@@ -11,33 +11,33 @@ function is_corr_in_range(r, min, max)
         end
     end
 
-    if sum( inRange.(r, min,max) ) < prod(size(r))
+    if all( inRange.(r, min,max) )
         error("Correlation matrix is not in range($min, $max). Check your r matrix again. ")
     end
 
 end
-function lod_score_multithread(m,r::AbstractArray{Float64, 2})
+function lod_score_multithread(m,nr::AbstractArray{Float64, 2})
     n = m 
-    Threads.@threads for j in 1:size(r)[2]
-        for i in 1:size(r)[1]
-            r_square = (r[i,j])^2
+    Threads.@threads for j in 1:size(nr)[2]
+        for i in 1:size(nr)[1]
+            r_square = (nr[i,j] / n)^2
             tmp = (-n/2.0) * log10(1.0-r_square)
-            r[i,j] = tmp
+            nr[i,j] = tmp
         end
     end
-    return r
+    return nr #
 end
 
-function lod_score_multithread(m,r::AbstractArray{Float32,2})
+function lod_score_multithread(m,nr::AbstractArray{Float32,2})
     n = m 
-    Threads.@threads for j in 1:size(r)[2]
-        for i in 1:size(r)[1]
-            r_square = (r[i,j])^2
+    Threads.@threads for j in 1:size(nr)[2]
+        for i in 1:size(nr)[1]
+            r_square = (nr[i,j] / n)^2
             tmp = (-n/2.0f0) * log10(1.0f0-r_square)
-            r[i,j] = tmp
+            nr[i,j] = tmp
         end
     end
-    return r
+    return nr
 end
 
 function lod2p(lod)
@@ -50,49 +50,6 @@ function pval_calc(corr, dof)
     return pval
 end
 
-"""
-$(SIGNATURES)
-
-# Arguments:
-- `Y` : a matrix of phenotypes
-- `G` : a matrix of genotypes
-- `X` : a matrix of covariates
-- `n` : the number of individuals
-- `export_matrix` : a boolean value that determines whether the result should be the maximum value of LOD score of each phenotype and its corresponding index, or the whole LOD score matrix. 
-
-# Output: 
-returns the maximum LOD (Log of odds) score if `export_matrix` is false, or LOD score matrix otherwise.
-
-"""
-function cpurun(Y::AbstractArray{<:Real,2}, G::AbstractArray{<:Real,2}, X::AbstractArray{<:Real,2}, n::Int, export_matrix::Bool,lod_or_pval::String, debug::Bool=true)
-    @info "Running genome scan with covariates..."
-    px = calculate_px(X)
-    # display(px)
-    y_hat = LinearAlgebra.BLAS.gemm('N', 'N', px, Y)
-    g_hat = LinearAlgebra.BLAS.gemm('N', 'N', px, G)
-    y_tilda = Y .- y_hat
-    g_tilda = G .- g_hat
-    y_std = get_standardized_matrix(y_tilda) 
-    g_std = get_standardized_matrix(g_tilda)
-    r = calculate_r(y_std, g_std)
-    if debug
-        is_corr_in_range(r, -1,1)
-    end
-    if lod_or_pval == "lod"
-        lod = lod_score_multithread(n, r)
-        if !export_matrix 
-            println("Calculating max lod")
-            return find_max_idx_value(lod)
-        else 
-            println("Exporting matrix.")
-            return lod
-        end
-    elseif lod_or_pval == "pval"
-        return pval_calc(r, n-2)
-    else
-        error("Must specify `lod_or_pval`, choose between `lod`, or `pval`")
-    end
-end
 
 # function pval_calc(corr, dof)
 #     t = corr .* sqrt.(dof ./ (1 .- corr .^2))
@@ -141,32 +98,38 @@ $(SIGNATURES)
 returns the maximum LOD (Log of odds) score if `export_matrix` is false, or LOD score matrix otherwise.
 
 """
-function cpurun(Y::AbstractArray{<:Real, 2}, G::AbstractArray{<:Real, 2}, n::Int, export_matrix::Bool, lod_or_pval::String, debug::Bool=true)
-    @info "Running genome scan..."
-    pheno_std = get_standardized_matrix(Y);
-    geno_std = get_standardized_matrix(G);
-    #step 2: calculate R, matrix of corelation coefficients
-    r = calculate_r(pheno_std,geno_std);
-    if debug
-        is_corr_in_range(r, -1,1)
+function cpurun(Y::AbstractArray{<:Real,2}, G::AbstractArray{<:Real,2}, X::Union{AbstractArray{<:Real, 2}, Nothing}=nothing; export_matrix=false, lod_or_pval="lod")
+    @debug begin 
+        "size(Y) = $(size(Y)), size(G) = $(size(G)). Number of indvidual should be size(Y, 1), or size(G, 1). "
     end
-    @info "Done calculating corelation coefficients."
-    #step 3: calculate r square and lod score
-    if lod_or_pval == "lod"
-        lod = lod_score_multithread(n,r)
-        @info "Done calculating LOD. "
+    n = size(G,1)
 
+    if !isnothing(X) # X is not empty. 
+        px = calculate_px(X)
+        y_hat = LinearAlgebra.BLAS.gemm('N', 'N', px, Y)
+        g_hat = LinearAlgebra.BLAS.gemm('N', 'N', px, G)
+        Y = Y .- y_hat
+        G = G .- g_hat
+    end
+    y_std = get_standardized_matrix(Y) 
+    g_std = get_standardized_matrix(G)
+
+    nr = calculate_nr(y_std,g_std);
+    @debug begin 
+        test_r_in_range = is_corr_in_range(nr./n, -1,1)
+        "R is in range (-1, 1): $test_r_in_range"
+    end
+
+    if lod_or_pval == "lod"
+        lod = lod_score_multithread(n,nr)
         if !export_matrix 
-            println("Calculating max lod")
             return find_max_idx_value(lod)
         else 
-            println("Exporting matrix.")
             return lod
         end
     elseif lod_or_pval == "pval"
-        return pval_calc(r, n-2)
+        return pval_calc(nr ./ n, n-2)
     else 
         error("Must specify `lod_or_pval`, choose between `lod`, or `pval`")
-    end
-
+    end 
 end

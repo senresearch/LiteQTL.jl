@@ -4,7 +4,7 @@ using DelimitedFiles
 function main()
     geno_file = joinpath(@__DIR__, "..", "data", "processed", "spleen-bxd-genoprob.csv")
     pheno_file = joinpath(@__DIR__, "..", "data","processed", "spleen-pheno-nomissing.csv")
-    export_matrix = false
+    export_matrix = true
     output_file = "output.csv"
     rqtl_file = joinpath(@__DIR__, "..", "data", "UTHSC_SPL_RMA_1210.zip")
 
@@ -21,11 +21,9 @@ function main()
     # println("CPU timing: $(cpu_timing[3])")
 
     # running analysis.
-    @time lodc = scan(Y, G, n; export_matrix, "lod", false);
+    @time lodc = scan(Y, G, export_matrix=export_matrix, usegpu=false, lod_or_pval="lod");
     # lodg = scan(Y, G, n; usegpu=true)
 
-    # display(lodc[1:20, 1:2])
-    # display(lodg[1:20, 1:2])
 
     # if !export_matrix
     #     gmap = get_gmap_info(rqtl_file)

@@ -3,8 +3,8 @@ using CSV
 using DelimitedFiles
 using DataFrames
 
-pheno_file = "/export/xiaoqihu/git/tensorqtl/example/cleanpheno.csv"
-geno_file = "/export/xiaoqihu/git/tensorqtl/example/cleangeno.csv"
+pheno_file = "/home/xiaoqihu/git/LiteQTL-G3-supplement/data/tensorqtldata/cleanpheno.csv"
+geno_file = "/home/xiaoqihu/git/LiteQTL-G3-supplement/data/tensorqtldata/genotype.csv"
 export_matrix = false
 
 @time pheno = LiteQTL.get_pheno_data(pheno_file, Float64, transposed=true)
