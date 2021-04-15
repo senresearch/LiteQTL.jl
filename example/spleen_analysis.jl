@@ -20,9 +20,9 @@ function main()
     # cpu_timing = benchmark(5, scan, Y, G, n; export_matrix);
     # println("CPU timing: $(cpu_timing[3])")
 
-    # running analysis.
+    # running analysis without covariates.
     @time lodc = scan(Y, G, export_matrix=export_matrix, usegpu=false, lod_or_pval="lod");
-    # lodg = scan(Y, G, n; usegpu=true)
+    # lodg = scan(Y, G; usegpu=true)
 
 
     # if !export_matrix
@@ -33,7 +33,6 @@ function main()
     #     header = reshape(["marker", "chr", "pos", "idx", "lod"], 1,:)
     #     lod = vcat(header, lod)
     # end
-
 
     # write output to file
     # writedlm(joinpath(Base.@__DIR__, "..", "data", "results", output_file), lod, ',')

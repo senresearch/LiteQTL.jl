@@ -25,7 +25,7 @@ function lod_score_multithread(m,nr::AbstractArray{Float64, 2})
             nr[i,j] = tmp
         end
     end
-    return nr #
+    return nr
 end
 
 function lod_score_multithread(m,nr::AbstractArray{Float32,2})
@@ -98,10 +98,23 @@ $(SIGNATURES)
 returns the maximum LOD (Log of odds) score if `export_matrix` is false, or LOD score matrix otherwise.
 
 """
-function cpurun(Y::AbstractArray{<:Real,2}, G::AbstractArray{<:Real,2}, X::Union{AbstractArray{<:Real, 2}, Nothing}=nothing; export_matrix=false, lod_or_pval="lod")
+function cpurun(pheno::AbstractArray{<:Real,2}, geno::AbstractArray{<:Real,2}, X::Union{AbstractArray{<:Real, 2}, Nothing}=nothing; maf_threshold=0.05, export_matrix=false, lod_or_pval="lod",timing_file="")
     @debug begin 
         "size(Y) = $(size(Y)), size(G) = $(size(G)). Number of indvidual should be size(Y, 1), or size(G, 1). "
     end
+    pval_time = 0.0 
+    compute_time = 0.0 
+    result_reorg_time = 0.0 
+    
+    total_start = time_ns()
+    start = time_ns()
+    G = geno
+    Y = pheno
+    if maf_threshold > 0 
+        println("Filtering MAF")
+        G = filter_maf(geno, maf_threshold=maf_threshold)
+    end
+
     n = size(G,1)
 
     if !isnothing(X) # X is not empty. 
@@ -119,17 +132,51 @@ function cpurun(Y::AbstractArray{<:Real,2}, G::AbstractArray{<:Real,2}, X::Union
         test_r_in_range = is_corr_in_range(nr./n, -1,1)
         "R is in range (-1, 1): $test_r_in_range"
     end
+    stop = time_ns()
+    compute_time = (stop - start) * 1e-9
 
     if lod_or_pval == "lod"
         lod = lod_score_multithread(n,nr)
+        stop = time_ns()
+        compute_time = (stop -start) * 1e-9
         if !export_matrix 
-            return find_max_idx_value(lod)
+            start = time_ns()
+            max = find_max_idx_value(lod)
+            stop = time_ns()
+            result_reorg_time = (stop - start) * 1e-9
+            # return max
         else 
-            return lod
+            # return lod
         end
     elseif lod_or_pval == "pval"
-        return pval_calc(nr ./ n, n-2)
+        start = time_ns()
+        pval = pval_calc(nr ./ n, n-2)
+        stop = time_ns()
+        pval_time = (stop - start) * 1e-9
+        # return pval
     else 
         error("Must specify `lod_or_pval`, choose between `lod`, or `pval`")
     end 
+
+    total_stop = time_ns()
+    elapsed_total = (total_stop - total_start) * 1e-9
+
+    if timing_file != ""
+        open("/home/xiaoqihu/git/LiteQTL-G3-supplement/code/tensorqtl/liteqtl_timing_report.txt", "a") do io
+            write(io, "$(now()),CPU,NA,$(compute_time),$(result_reorg_time),$(pval_time),$(elapsed_total)\n")
+        end   
+    end 
+
+    if lod_or_pval == "lod" 
+        if export_matrix 
+            return lod 
+        else 
+            return max 
+        end
+    elseif lod_or_pval == "pval"
+        return pval 
+    else 
+        error("Must specify `lod_or_pval`, choose between `lod`, or `pval`")
+    end
+
 end

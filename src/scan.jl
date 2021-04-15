@@ -1,3 +1,5 @@
+
+
 # """
 # $(SIGNATURES)
 
@@ -37,11 +39,10 @@ This scan function will run
 # Output: 
 returns the maximum LOD (Log of odds) score if `export_matrix` is false, or LOD score matrix otherwise.
 """
-function scan(Y::AbstractArray{<:Real, 2}, G::AbstractArray{<:Real, 2},  X::Union{AbstractArray{<:Real, 2}, Nothing}=nothing; export_matrix=false, usegpu=false, lod_or_pval="lod")
+function scan(Y::AbstractArray{<:Real, 2}, G::AbstractArray{<:Real, 2},  X::Union{AbstractArray{<:Real, 2}, Nothing}=nothing; maf_threshold=0.05, export_matrix=false, usegpu=false, lod_or_pval="lod", timing_file="")
     if usegpu
-        return LiteQTL.gpurun(Y, G, X)
+        return LiteQTL.gpurun(Y, G, X, maf_threshold=maf_threshold, export_matrix=export_matrix, timing_file=timing_file)
     end
 
-    return LiteQTL.cpurun(Y,G,X, export_matrix = export_matrix, lod_or_pval = lod_or_pval)
-
+    return LiteQTL.cpurun(Y,G,X, maf_threshold=maf_threshold, export_matrix = export_matrix, lod_or_pval = lod_or_pval, timing_file=timing_file)
 end

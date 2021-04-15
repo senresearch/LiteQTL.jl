@@ -50,7 +50,7 @@ function convert2float(a, datatype)
 end
 
 
-function filter_maf(genotype::AbstractArray{<:Real, 2}; maf_threshold=0.05)
+function filter_maf(genotype::Array{<:Real, 2}; maf_threshold=0.05)
     alleles = 2
     
     af = sum(genotype, dims=1) ./ (alleles * size(genotype, 1))
@@ -61,7 +61,7 @@ function filter_maf(genotype::AbstractArray{<:Real, 2}; maf_threshold=0.05)
         if size(mask,1) != size(genotype, 2)
             error("Mask dimention does not match original matrix. Mask size: $(size(mask)), Matrix size: $(size(genotype))")
         end
-        genotype = genotype[:, mask]
+        newgenotype = genotype[:, mask]
     end
-    return genotype
+    return newgenotype
 end

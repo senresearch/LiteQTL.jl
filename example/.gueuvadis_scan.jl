@@ -50,5 +50,7 @@ m = size(Y,2)
 p = size(G,2)
 println("******* Indivuduals n: $n, Traits m: $m, Markers p: $p ****************");
 
-@time lodc = LiteQTL.scan(Y, G,n;export_matrix, "pval", false);
+@time lodc = scan(Y, G, export_matrix=export_matrix, usegpu=false, lod_or_pval="lod");
+
+@time lodc = LiteQTL.scan(Y, G,n;export_matrix, "lod", false);
 @time lodg = LiteQTL.scan(Y, G,n;usegpu=true)

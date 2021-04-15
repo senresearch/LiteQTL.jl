@@ -4,7 +4,7 @@ function get_standardized_matrix_gpu(m::AbstractArray{<:Real,2})
 end
 
 function get_standardized_matrix(mat::AbstractArray{<:Real,2})
-    m = mat
+    m = copy(mat)
     Threads.@threads for col in 1:size(m)[2]
         summ = 0.0f0
         rows = size(m)[1]
