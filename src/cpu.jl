@@ -41,14 +41,14 @@ function lod_score_multithread(m,nr::AbstractArray{Float32,2})
 end
 
 function lod2p(lod)
-    return 1-cdf(Chisq(1),2*log(10)*lod)
+    return 1 .- cdf(Chisq(1),2*log(10)*lod)
 end
 
-function pval_calc(corr, dof)
-    t = corr .* sqrt.(dof ./ (1 .- corr .^2))
-    pval = 2 .* cdf(TDist(dof), .-abs.(t))
-    return pval
-end
+# function pval_calc(corr, dof)
+#     t = corr .* sqrt.(dof ./ (1 .- corr .^2))
+#     pval = 2 .* cdf(TDist(dof), .-abs.(t))
+#     return pval
+# end
 
 
 # function pval_calc(corr, dof)
@@ -105,55 +105,45 @@ function cpurun(pheno::AbstractArray{<:Real,2}, geno::AbstractArray{<:Real,2}, X
     pval_time = 0.0 
     compute_time = 0.0 
     result_reorg_time = 0.0 
-    
+    data_transfer_time = 0.0 
+
     total_start = time_ns()
-    start = time_ns()
-    G = geno
-    Y = pheno
-    if maf_threshold > 0 
-        println("Filtering MAF")
-        G = filter_maf(geno, maf_threshold=maf_threshold)
-    end
+    data_transfer_time += @elapsed G = geno
+    data_transfer_time += @elapsed Y = pheno
+    
+    compute_time += @elapsed begin 
+        if maf_threshold > 0 
+            println("Filtering MAF")
+            G = filter_maf(geno, maf_threshold=maf_threshold)
+        end
+    
+        n = size(G,1)
+        if !isnothing(X) # X is not empty. 
+            px = calculate_px(X)
+            y_hat = LinearAlgebra.BLAS.gemm('N', 'N', px, Y)
+            g_hat = LinearAlgebra.BLAS.gemm('N', 'N', px, G)
+            Y = Y .- y_hat
+            G = G .- g_hat
+        end
+        y_std = get_standardized_matrix(Y) 
+        g_std = get_standardized_matrix(G)
 
-    n = size(G,1)
+        nr = calculate_nr(y_std,g_std);
+    end 
 
-    if !isnothing(X) # X is not empty. 
-        px = calculate_px(X)
-        y_hat = LinearAlgebra.BLAS.gemm('N', 'N', px, Y)
-        g_hat = LinearAlgebra.BLAS.gemm('N', 'N', px, G)
-        Y = Y .- y_hat
-        G = G .- g_hat
-    end
-    y_std = get_standardized_matrix(Y) 
-    g_std = get_standardized_matrix(G)
-
-    nr = calculate_nr(y_std,g_std);
     @debug begin 
         test_r_in_range = is_corr_in_range(nr./n, -1,1)
         "R is in range (-1, 1): $test_r_in_range"
     end
-    stop = time_ns()
-    compute_time = (stop - start) * 1e-9
 
     if lod_or_pval == "lod"
-        lod = lod_score_multithread(n,nr)
-        stop = time_ns()
-        compute_time = (stop -start) * 1e-9
+        compute_time += @elapsed lod = lod_score_multithread(n,nr)
+
         if !export_matrix 
-            start = time_ns()
-            max = find_max_idx_value(lod)
-            stop = time_ns()
-            result_reorg_time = (stop - start) * 1e-9
-            # return max
-        else 
-            # return lod
+            compute_time += @elapsed lod = find_max_idx_value(lod)
         end
     elseif lod_or_pval == "pval"
-        start = time_ns()
-        pval = pval_calc(nr ./ n, n-2)
-        stop = time_ns()
-        pval_time = (stop - start) * 1e-9
-        # return pval
+        pval_time += @elapsed pval = pval_calc(nr ./ n, n-2)
     else 
         error("Must specify `lod_or_pval`, choose between `lod`, or `pval`")
     end 
@@ -161,18 +151,15 @@ function cpurun(pheno::AbstractArray{<:Real,2}, geno::AbstractArray{<:Real,2}, X
     total_stop = time_ns()
     elapsed_total = (total_stop - total_start) * 1e-9
 
+    
     if timing_file != ""
         open("/home/xiaoqihu/git/LiteQTL-G3-supplement/code/tensorqtl/liteqtl_timing_report.txt", "a") do io
-            write(io, "$(now()),CPU,NA,$(compute_time),$(result_reorg_time),$(pval_time),$(elapsed_total)\n")
+            write(io, "$(now()),CPU,$(data_transfer_time),$(compute_time),$(result_reorg_time),$(pval_time),$(elapsed_total)\n")
         end   
     end 
 
     if lod_or_pval == "lod" 
-        if export_matrix 
-            return lod 
-        else 
-            return max 
-        end
+        return lod
     elseif lod_or_pval == "pval"
         return pval 
     else 

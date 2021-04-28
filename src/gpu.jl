@@ -21,7 +21,7 @@ function gpu_square_lod(d_nr::CuArray{<:Real,2},n,m,p, export_matrix::Bool)
     threads = CUDA.warpsize(dev)
     blocks = min(Int(ceil(ndrange/threads)), attribute(dev, CUDA.CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_X))
     @cuda blocks=blocks threads=threads lod_kernel(d_nr, ndrange,n)
-    if export_matrix 
+    if !export_matrix 
         @cuda blocks=blocks threads=threads reduce_kernel(d_nr,m,p)
     end
     return 
@@ -96,7 +96,7 @@ function gpurun(pheno::Array{<:Real,2}, geno::Array{<:Real,2}, X::Union{Array{<:
     else 
         result_dim = 2
     end
-    compute_time += @elapsed lod = convert(Array{typeof(Y[1,1]), 2},zeros(0,result_dim))
+    result_reorg_time += @elapsed lod = convert(Array{typeof(Y[1,1]), 2},zeros(0,result_dim))
     # Transfer Genotype array to GPU
     data_transfer_time += CUDA.@elapsed d_g = CuArray(G);
 
@@ -144,7 +144,7 @@ function gpurun(pheno::Array{<:Real,2}, geno::Array{<:Real,2}, X::Union{Array{<:
         else 
             data_transfer_time += CUDA.@elapsed res = collect(d_nr[:, 1:2])
         end
-        compute_time += @elapsed lod = vcat(lod, res)
+        result_reorg_time += @elapsed lod = vcat(lod, res)
     end
     stop = time_ns()
     elapsed_total = (stop - start) * 1e-9
