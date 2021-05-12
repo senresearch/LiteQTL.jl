@@ -19,7 +19,8 @@ LiteQTL is a package that runs whole genome QTL scans near real-time, utilizing 
 - LOD (Log of Odds) matrix
 
 # Example
-See [`example/spleen_analysis.ipynb`](https://github.com/senresearch/LiteQTL.jl/blob/master/example/spleen_analysis.ipynb)
+
+We have created a Jupyter notebook with the whole analysis pipeline using the BXD spleen data as an example.  Users can run eQTL scans and create a eQTL hits figure.  See: [`example/spleen_analysis.ipynb`](https://github.com/senresearch/LiteQTL.jl/blob/master/example/spleen_analysis.ipynb)
 
 # Auxilary Github Repositories
 
