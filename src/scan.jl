@@ -3,8 +3,25 @@
 """
 $(SIGNATURES)
 
-This scan function will run 
-
+This function is the main API for eQTL scans. EQTL scan process includes
+    If no covariate: 
+    - filter maf if the threshold is greater than 0
+    - standardizing phenotype matrix (Y) and genotype matrix (G)
+    - calculate correlation (R) matrix. 
+    - computes log of odds (LOD) score matrix, or p-value if `lod_or_pval` is set to `lod`
+    - calculate maximum LOD score if `export_matrix` is set to false. 
+    
+    If covariates exists:
+    - calculate px 
+    - computes Y hat and G hat by matrix multiplication. 
+    - substract Y hat and G hat from Y and G respectively. 
+    - filter maf if the threshold is greater than 0
+    - standardizing phenotype matrix (Y) and genotype matrix (G)
+    - calculate correlation (R) matrix. 
+    - computes log of odds (LOD) score matrix, or p-value if `lod_or_pval` is set to `lod`
+    - calculate maximum LOD score if `export_matrix` is set to false. 
+    
+    
 # Arguments:
 - `Y` : a matrix of phenotypes.
 - `G` : a matrix of genotypes.

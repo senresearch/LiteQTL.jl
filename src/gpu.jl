@@ -1,9 +1,34 @@
+"""
+$(SIGNATURES)
+Computes correlation matrix (R) * n on GPU with cuBLAS library. n is not removed because of performance choice. 
 
+# Arguments
+- `a` : standardized phenotype matrix
+- `b` : standardized genotype matrix
+
+# Output: 
+returns correlation matrix R on GPU device (of type CuArray). 
+
+"""
 function calculate_nr(a::CuArray,b::CuArray)
     return CUDA.CUBLAS.gemm('T', 'N', a,b);
 end
 
-#TODO: Need to calculate batch size based on both genotype and phenotype. This one is only based on size of phenotype. 
+"""
+$(SIGNATURES)
+Computes the number of blocks for chuncking large phenotype matrix, to fit into GPU memory. 
+
+# Arguments
+- `n` : number of individuals
+- `m` : number of phenotypes 
+- `p` : number of genotype markers
+- datatype: datatype of phenotype. (Float32, or Float64)
+
+# Output: 
+returns
+- `num_block` : number of blocks to disect phenotype
+- `block_size` : size of each block. 
+"""
 function get_pheno_block_size(n::Int, m::Int, p::Int, datatype::DataType)
     total_data_size = (n*m + n*p + m*p) * sizeof(datatype) # get the number of bytes in total
     gpu_mem = CUDA.available_memory() * 0.89 # can not use all of gpu memory, need to leave some for intermediate result.
@@ -13,6 +38,21 @@ function get_pheno_block_size(n::Int, m::Int, p::Int, datatype::DataType)
     return (num_block, block_size)
 end
 
+"""
+$(SIGNATURES)
+Sets up GPU environment and calls GPU kernels. 
+
+# Arguments
+- `d_nr` : Output matrix (correlation matrix) in CuArray format
+- `n` : number of individuals
+- `m` : number of phenotypes 
+- `p` : number of genotype markers
+- `export_matrix` : boolean value to indicate user desire output
+
+# Output: 
+returns correlation matrix R, or maximum of R if `export_matrix` is set to false
+
+"""
 function gpu_square_lod(d_nr::CuArray{<:Real,2},n,m,p, export_matrix::Bool)
     #Get total number of threads
     ndrange = prod(size(d_nr))
@@ -30,16 +70,43 @@ end
 ################
 ## GPU kernel ##
 ################
-function lod_kernel(input, MAX,n)
+"""
+$(SIGNATURES)
+GPU kernel that computes LOD scores. 
+
+# Arguments
+- `nr` : correlation matrix. will be updated with output results. (Type CuArray)
+- `MAX` : number of total GPU threads, also called ndrange. 
+- `n` : number of individuals
+
+
+# Output: 
+Results written back to input matrix `nr`. Returns the LOD scores. 
+
+"""
+function lod_kernel(nr, MAX,n)
     # TODO: n, 1, 2, do they need to be converted to correct data type for better performance?
     tid = (blockIdx().x-1) * blockDim().x + threadIdx().x
     if(tid < MAX+1)
-        r_square = (input[tid]/n)^2
-        input[tid] = (-n/2.0) * CUDA.log10(1.0-r_square)
+        r_square = (nr[tid]/n)^2
+        nr[tid] = (-n/2.0) * CUDA.log10(1.0-r_square)
     end
     return
 end
 
+"""
+$(SIGNATURES)
+Computes the maximum LOD score of each row. Results written back to the first two columns.
+
+# Arguments
+- `input` : LOD score
+- `rows` : number of rows for `input`
+- `cols` : number of cols for `input`
+
+# Output: 
+Output is written to the `input` matrix, first column of `input` matrix is the index of maximum, and second column is the maximum value of that row. 
+
+"""
 function reduce_kernel(input, rows, cols)
     tid = (blockIdx().x-1) * blockDim().x + threadIdx().x
 
@@ -60,18 +127,20 @@ function reduce_kernel(input, rows, cols)
     return
 end
 
-# """
-# $(SIGNATURES)
+"""
+$(SIGNATURES)
 
-# # Arguments:
-# - `Y` : a matrix of phenotypes
-# - `G` : a matrix of genotypes
-# - `n` : the number of individuals
-
-# # Output: 
-# returns the maximum LOD (Log of odds) score 
-
-# """
+# Arguments:
+- `Y` : a matrix of phenotypes.
+- `G` : a matrix of genotypes.
+- `X` : a matrix of covariates. Default is `nothing`. If `nothing`, scan is run without covariates. 
+- `maf_threshold`: a floating point number to indicate the maf_threshold. Default is 0.05. Set to 0 if no maf filtering should be done. 
+- `export_matrix` : a boolean value that determines whether the result should be the maximum value of LOD score of each phenotype and its corresponding index, or the whole LOD score matrix. 
+- `lod_or_pval`: a string value of either `lod` or `pval` to indicate the desired output. 
+- `timing_file`: a string that indicates the file location for the timing outputs. Default is nothing. 
+# Output: 
+returns LOD score, in vector or matrix format depending on value of `export_matrix`. P value for GPU is not currently implementated. 
+"""
 function gpurun(pheno::Array{<:Real,2}, geno::Array{<:Real,2}, X::Union{Array{<:Real, 2}, Nothing}=nothing; maf_threshold=0.05, export_matrix=false, timing_file="")
     start = time_ns()
     Y = pheno

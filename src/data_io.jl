@@ -3,7 +3,6 @@
 $(SIGNATURES)
 returns the genotype data. Will skip every other column because genotype probability is duplicated. 
 
-
 """
 function get_geno_data(file, datatype)
 
@@ -41,15 +40,18 @@ function get_pheno_data(file, datatype; transposed=true)
 
 end
 
-function convert2float(a, datatype)
-    if a == "NA"
-        return missing 
-    else 
-        return convert(datatype, a)
-    end
-end
+"""
+$(SIGNATURES)
+Filter genotype data with a minor allele frequency threshold. 
 
+# Arguments
+- `genotype` : genotype matrix
+- `maf_threshold` : default value is 0.05. 
 
+# Output: 
+returns filtered genotype matrix. 
+
+"""
 function filter_maf(genotype::Array{<:Real, 2}; maf_threshold=0.05)
     alleles = 2
     
