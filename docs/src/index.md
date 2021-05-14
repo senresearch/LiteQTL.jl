@@ -35,7 +35,7 @@ It is an effort to make our research reproducible. All code related to experimen
 
 
 ```@index
-Pages = ["functions.md"]
+Pages = ["library.md"]
 ```
 
 
