@@ -24,7 +24,7 @@ p = size(G,2)
 
 println("******* Indivuduals n: $n, Traits m: $m, Markers p: $p ****************");
 
-lod = LiteQTL.cpurun(Y, G,n,export_matrix);
+lod = scan(Y, G, export_matrix=export_matrix, maf_threshold=0.00, usegpu=false, lod_or_pval="lod");
 julia_max = lod
 
 julia_output_file = joinpath(Base.@__DIR__, "..", "data", "results", string(datatype) * dataset*"_LiteQTL_output.csv")
