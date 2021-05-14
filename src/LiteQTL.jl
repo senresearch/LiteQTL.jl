@@ -21,9 +21,5 @@ include("cpu.jl")
 include("gpu.jl")
 include("scan.jl")
 export scan
-include("match_gmap_info.jl")
-export  get_gmap_info, match_gmap
-# include("cli.jl")
-
 
 end # module
