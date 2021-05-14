@@ -31,5 +31,12 @@ This repo contais scripts to compile the LiteQTL package to remove the compilati
 It is an effort to make our research reproducible. All code related to experiment reuslt, from dowloading data, cleaning data, to running LiteQTL and creating figure are found in this repository. You can recreate the results in our paper [Speeding up eQTL scans in the BXD population using GPUs](https://www.biorxiv.org/content/10.1101/2020.06.22.153742v1) using the scripts in this repository.
 
 
+## Index
+
+
+```@index
+Pages = ["functions.md"]
+```
+
 
 
