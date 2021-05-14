@@ -2,7 +2,7 @@
 $(SIGNATURES)
 Sets the number of threads that will be used by BLAS library. 
 !Notes: Set the thread number with env JULIA_NUM_THREADS to your desired number of threads. 
-For example: `$ JULIA_NUM_THREADS=16 julia`
+For example: `JULIA_NUM_THREADS=16 julia`
 
 # Arguments
 - `nthread` : desired number of threads 
