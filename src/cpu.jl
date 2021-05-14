@@ -47,7 +47,7 @@ $(SIGNATURES)
 Computes log of odds (LOD) score. Optimized for correlation matrix type is Float64 (double precision).
 
 !Notes: Set the thread number with env JULIA_NUM_THREADS to your desired number of threads. 
-For example: `$ JULIA_NUM_THREADS=16 julia`
+For example: `JULIA_NUM_THREADS=16 julia`
 
 # Arguments
 - `m` : number of individuals. 
@@ -74,7 +74,7 @@ $(SIGNATURES)
 Computes log of odds (LOD) score. Optimized for correlation matrix type is Float32 (single precision).
 
 !Notes: Set the thread number with env JULIA_NUM_THREADS to your desired number of threads. 
-For example: `$ JULIA_NUM_THREADS=16 julia`
+For example: `JULIA_NUM_THREADS=16 julia`
 
 # Arguments
 - `m` : number of individuals. 
@@ -117,7 +117,7 @@ Computes the index of maximum, and maximum value of each row of a matrix.
 Optimized with multi-threading. 
 
 !Notes: Set the thread number with env JULIA_NUM_THREADS to your desired number of threads. 
-For example: `$ JULIA_NUM_THREADS=16 julia`
+For example: `JULIA_NUM_THREADS=16 julia`
 
 # Arguments
 - `lod` : input matrix. 
