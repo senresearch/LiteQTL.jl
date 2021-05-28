@@ -24,8 +24,7 @@ Chelsea Trotter, Hyeonju Kim, Gregory Farage, Pjotr Prins, Robert W. Williams, K
 
 ## How to use LiteQTL:
 
-Our package currently works for Julia v1.5 (see the [older releases](https://julialang.org/downloads/oldreleases/)); 
-it has not been tested for the current stable release v1.6.
+Our package currently works for Julia v1.5 and v 1.6.
 
 To add LiteQTL to your Julia installation:
 ```julia
