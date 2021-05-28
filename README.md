@@ -23,7 +23,11 @@ Chelsea Trotter, Hyeonju Kim, Gregory Farage, Pjotr Prins, Robert W. Williams, K
 [Speeding up eQTL scans in the BXD population using GPUs](https://www.biorxiv.org/content/10.1101/2020.06.22.153742v1.full.pdf).
 
 ## How to use LiteQTL:
-This package is developed in Julia. To add LiteQTL to your Julia installation:
+
+Our package currently works for Julia v1.5 (see the [older releases](https://julialang.org/downloads/oldreleases/)); 
+it has not been tested for the current stable release v1.6.
+
+To add LiteQTL to your Julia installation:
 ```julia
 julia> using Pkg;
 julia> Pkg.add("LiteQTL")
