@@ -1,7 +1,7 @@
 name = "LiteQTL"
 uuid = "85e3bc59-379b-574d-918d-c856ad6b8b91"
 authors = ["Chelsea Trotter", "Sen Research"]
-version = "0.2.0"
+version = "0.2.1"
 
 [deps]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
