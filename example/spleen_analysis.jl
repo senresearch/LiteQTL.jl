@@ -4,12 +4,13 @@ using CSV
 using DataFrames 
 
 function main()
-    geno_file = joinpath(@__DIR__, "..", "data", "processed", "spleen-bxd-genoprob.csv")
-    pheno_file = joinpath(@__DIR__, "..", "data","processed", "spleen-pheno-nomissing.csv")
-    gmap_file = joinpath(@__DIR__, "..", "data","processed", "gmap.csv")
+    geno_file = joinpath(pathof(LiteQTL),"../..", "data", "processed", "spleen-bxd-genoprob.csv")
+    pheno_file = joinpath(pathof(LiteQTL), "../..", "data","processed", "spleen-pheno-nomissing.csv")
+    gmap_file = joinpath(pathof(LiteQTL), "../..","data","processed", "gmap.csv")
+        
     export_matrix = false
     output_file = "output.csv"
-    rqtl_file = joinpath(@__DIR__, "..", "data", "UTHSC_SPL_RMA_1210.zip")
+    rqtl_file = joinpath(pathof(LiteQTL), "../..", "data", "UTHSC_SPL_RMA_1210.zip")
 
     LiteQTL.set_blas_threads(16);
     # Read in data.
