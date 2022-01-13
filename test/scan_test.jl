@@ -32,7 +32,7 @@ julia_output_file = joinpath(Base.@__DIR__, "..", "data", "results", string(data
 
 # read in Rqtl scan result 
 rqtl_result_file = abspath(joinpath(Base.@__DIR__, "..", "data", "results", dataset*"_rqtl_lod_score.csv"))
-rqtl_max =  Matrix(CSV.read(rqtl_result_file, DataFrame, datarow=2))
+rqtl_max =  Matrix(CSV.read(rqtl_result_file, DataFrame, skipto=2))
 
 # check max value 
 @test sum(isapprox.(rqtl_max[:,2], julia_max[:,2], atol=1e-5)) == size(julia_max)[1]
