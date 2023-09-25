@@ -13,6 +13,6 @@ Shows number of threads set.
 """
 function set_blas_threads(nthread)
     LinearAlgebra.BLAS.set_num_threads(nthread)
-    core_nums = ccall((:openblas_get_num_threads64_, Base.libblas_name), Cint, ())
+    core_nums = BLAS.get_num_threads()
     println("Number of threads using: $core_nums")
 end
