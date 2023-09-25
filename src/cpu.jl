@@ -198,16 +198,19 @@ function cpurun(pheno::AbstractArray{<:Real,2}, geno::AbstractArray{<:Real,2}, X
         "R is in range (-1, 1): $test_r_in_range"
     end
 
-    if lod_or_pval == "lod"
+    if (lod_or_pval == "lod") || (lod_or_pval == "pval")
         compute_time += @elapsed lod = lod_score_multithread(n,nr)
-
         if !export_matrix 
             compute_time += @elapsed lod = find_max_idx_value(lod)
         end
-    elseif lod_or_pval == "pval"
-        pval_time += @elapsed pval = pval_calc(nr ./ n, n-2)
     else 
         error("Must specify `lod_or_pval`, choose between `lod`, or `pval`")
+    end
+
+    if lod_or_pval == "pval"
+        pval = lod 
+        pval_time += @elapsed pval[:,2] = lod2p.(lod[:,2])
+        pval_time += compute_time
     end 
 
     total_stop = time_ns()
